@@ -1,0 +1,11 @@
+---
+title: "Interactive data visualization on the web with R"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+TODO: list all the sections here with a short description

@@ -1,0 +1,175 @@
+---
+title: "A brief intro to R"
+output: 
+  learnr::tutorial:
+    progressive: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+knitr::opts_chunk$set(
+  message = FALSE,
+  comment = "#>",
+  collapse = TRUE
+)
+```
+
+
+## Basic syntax
+
+This section covers some R fundamentals that should help R beginners get up-to-speed so that subsequent sections are comprehensible. In R, the most important data structure is a vector. Similar to an array in languages like Java, a vector is a collection of values. And, as with most things in R, there are usually multiple ways to obtain the same collection of values. Take, for instance, a vector of the first three positive integers:
+
+```{r one}
+seq(1, 3)
+
+1:3
+```
+
+Regardless of how values are obtained, we almost always want to associate values with a name, so we may easily use them for subsequent computation(s). In R, you should assign values to a name via the `<-` assignment operator. This operator requires values to appear on the right-hand side and the name on the left-hand side:
+
+```{r two}
+x <- 1:3
+x
+
+y <- sum(x)
+y
+```
+
+A term people often use to refer to a value, or collection of values, is an _object_. At this point, R is aware of two objects, `x` (a vector of length 3) and `y` (a vector of length 1). We've only seen integer vectors up to this point, but one thing to know about R is that __everything is considered an object__, even functions, like `sum()`. Moreover, the `str()` function is helpful for obtaining information about nearly any object (except for functions).
+
+```{r three}
+str(x)
+```
+
+Notice how `str()` gives us a bit more information about `x` than we obtained from printing the object itself. The `int` part of the output signals that this is an integer vector, which is actually a special case of a numeric vector (fractional numbers are allowed in the latter but not the former). Later on, we'll see other important types such as character and logical, but let's pause for an exercise. Below I have a numeric vector named `z`. Convert `z` to an integer vector and name the result `z2`. What are the values of `z2`?
+
+
+```{r integer, exercise = TRUE}
+z <- c(1, 2, 3.1)
+```
+
+<div id="integer-hint">
+**Hint:** Use the `as.integer()` function to coerce `z` into an integer vector. 
+</div>
+
+## Homogeneous vs hetereogeneous vectors
+
+In the previous section we introduced numeric and integer vectors, which are also known more generally as *atomic* or *homogeneous* vectors, since every value in the collection is of the same type. But what about collections with more than one type? This requires a more flexible data structure, and the most flexible data structure in R is a list. Technically speaking, a list in R is a *heterogeneous* vector, and can also be *recursive* in the sense that a list may contain other list(s). The object `l` below is a list of length 4 and every list element contains an atomic vector. The second list element is a character vector containing 2 different "strings" (i.e., a sequence of characters). Perhaps somewhat suprisingly, the fourth element is also a character vector -- that's because the function `c()` combines values into a *heterogeneous* vector, so it has to coerce `1` and `FALSE` to `"1"` and `"FALSE"` (you can't necessarily coerce a string into a number or `TRUE`/`FALSE`).
+
+```{r four}
+l <- list(
+  1:5, 
+  c("R is fun", "but also quirky"), 
+  TRUE, 
+  c(1, "a", FALSE)
+)
+str(l)
+```
+
+Each list element is also allowed to have a name, but it isn't required:
+
+```{r five}
+l2 <- list(
+  a = 1:3,
+  4:5,
+  c = 6:7
+)
+l2
+```
+
+This printed output for `l2` provides us a hint as to how to extract list elements. If a list element is named, you can use the `$` operator to extract that element, but I recommend always using `[[` since it can extract both named and unnamed elements (and doesn't perform partical matching). To extract an unnamed element, you must reference it by its numerical index. Contrary to many other programming languages (e.g., JavaScript, Python, C, etc), R uses one-based indexing rather than zero-based indexing, meaning the first element is referenced with `1`, not `0`:
+
+```{r six, error=TRUE}
+l2[[0]]
+l2[[1]]
+l2[[2]]
+l2[[3]]
+# same as l2[[3]]
+l2[["c"]]
+```
+
+If you want to extract multiple elements from a list, use the `[` operator. 
+
+```{r seven}
+l2[c("a", "c")]
+```
+
+
+## The pipe operator (`%>%`)
+
+The `%>%` operator (from the R package **magrittr**) takes an object on the left-hand side of the operator and inserts into a function on the right-hand side of the operator. Think of an R package as an "add-on" to R which enables new features/functionality. To use a package, you must first install it (usually via `install.packages()`), then load the functionality via `library()`.
+
+```{r eight, eval = TRUE}
+# install.packages("magrittr")
+library(magrittr)
+l2 %>% names()
+```
+
+The main reason for using `%>%` is to make code easier to read:
+
+```{r nine, eval = TRUE}
+# reading inside-out is hard!
+length(names(l2))
+
+# reading left-to-right is easier
+l2 %>% names() %>% length()
+```
+
+Later on, we'll use `%>%` to make some more complicated code examples easier to read. This is especially true when using a sequence of functions to modify a central object (that is, each function inputs *and outputs* the same type of object). The R package **dplyr** is a very useful tool for modifying another important data structure in R, the `data.frame()` (similar to a table), and we'll introduce it very briefly here.
+
+## The dplyr package in a nutshell
+
+The R package **dplyr** makes common data manipulations/transformations fast, easy, and intuitive. It does this by providing a collection of simple-to-understand functions, that when properly combined together, may solve complicated problems. Also, for those familiar with remote databases, in many cases, **dplyr** statements will automatically translate and execute SQL statements in the remote data store, and bring the results into R for you! There is already a great introduction to the package [here](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html), so I won't try to cover everything here, just a few things that we'll need later on during this tutorial. To give you a small taste of how it works, let's use the `storms` data set that comes with the package:
+
+```{r ten}
+library(dplyr)
+storms
+```
+
+The `storms` data provides positions and attributes of 198 hurricanes, measured every 6 hours during the storm. Suppose our mission is to verify that there really are 4 measurements per storm per day, like the [documentation suggests](https://rdrr.io/cran/dplyr/man/storms.html). We could start by creating a new column tracking the date of the storm, lets call it `date`, by `paste()`ing together the existing `year`, `month`, and `day` columns, then transforming the character vector to a date vector via `as.Date()`. Creating a new column from existing ones is the job of `mutate()`:
+
+```{r eleven}
+s <- mutate(storms, date = as.Date(paste(year, month, day, sep = "-")))
+s
+```
+
+Counting the number of rows/occurences in a data set is such a common operation that **dplyr** provides a nifty shortcut for doing so: `count()`. This function is actually a special case of the more general split-apply-combine techniques supported by `group_by()` (i.e., split) and `summarise()` (i.e., apply and combine). The idea is to split the data into chunks according to the values of one or more column(s), apply some function to each chunk, then combine the results. In this case, the function being applied to each chunk just counts the number of rows: 
+
+```{r twelve}
+sn <- count(s, name, date)
+sn
+```
+
+Right away we have evidence that not every storm gets 4 observations per day. Let's obtain a summary of the counts:
+
+```{r a}
+count(sn, n)
+```
+
+Interestingly, there are actually anywhere between 1 and 7 observations per day for each storm. Lets `filter()` to find storms that have 7 rows for one day:
+
+```{r b}
+filter(sn, n == 7)
+```
+
+And sure enough, for some reason, not every storm has one measurement per 6 hours (important to know if we attempt to model this data!)
+
+```{r c}
+filter(s, name == "Andrew", date == "1992-08-24")
+```
+
+Now, if we wanted to show this result from the very beginning without storing/naming intermediate values and taking advtantage of the readability of the `%>%`, we could do:
+
+```{r d}
+storms %>%
+  mutate(date = as.Date(paste(year, month, day, sep = "-"))) %>%
+  filter(name == "Andrew", date == "1992-08-24")
+```
+
+
+
+## Getting help
+
+If you are serious about learning and using R, there will undoubtably be a time where you get stuck/confused and need help. R itself does provide a way to look up internal documentation if you know the function/object or package you want to research. When learning a new package, it is a good idea to see if there are any package vignettes describing the package use cases with the `browseVignettes()` function, for example: `browseVignettes(package = "dplyr")`. More generally, documentation about any object/function should be available via the `help()` function, for example: `help(list)` (or, for less typing, `?list`).
+
