@@ -20,13 +20,11 @@ Email: <cpsievert1@gmail.com> <br />
 Web: <https://cpsievert.me/>"
 author: "Carson Sievert"
 ---
-class: inverse, middle
+background-image: url(workflow.svg)
+background-size: contain
+class: inverse
 
 ## Data Science Workflow
-
-<div align="center">
-  <img src="workflow.svg" width="1000" height="350" />
-</div>
 
 ???
 
@@ -35,41 +33,61 @@ I love this diagram from the R for Data Science book.
 Concisely captures the main components.
 
 ---
-class: inverse, middle
+background-image: url(workflow1.svg)
+background-size: contain
+class: inverse
 
-## Expository vis
+# <font color="#cc1f29"> Expository vis </font>
 
-<p></p>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 
-<div align="center">
-  <img src="workflow1.svg" width="1000" height="300" />
-</div>
 
-???
+### The web is the preferred medium for communicating results.
 
-The web has become the preferred medium for communicating results.
-
-Once you know what you want to show, lots of good options out there!!
+### Assuming you know _exactly_ what you want to visualize, many good JavaScript frameworks exist!
 
 ---
-class: inverse, middle
+background-image: url(workflow2.svg)
+background-size: contain
+class: inverse
 
-## Exploratory vis
+# <font color="#cc1f29"> Exploratory vis </font>
 
-<p></p>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 
-<div align="center">
-  <img src="workflow2.svg" width="1000" height="325" />
-</div>
-
-* Data scientists have to juggle many technolgies (R, Python, JavaScript)
-
-???
-
-JavaScript lacks tools for iteration (necessary for exploration/discovery!)
+### JavaScript lacks tools for modeling/transformation
+### Too often, analysts juggle several technolgies (R, Python, JavaScript)
 
 
-```{r setup, echo = FALSE}
+```{r setup, include = FALSE}
 library(plotly)
 knitr::opts_chunk$set(
   message = FALSE,
@@ -81,6 +99,58 @@ knitr::opts_chunk$set(
 )
 ```
 
+---
+class: middle
+
+# What will I learn?
+
+Create interactive web graphics (from R via ggplot2 and plotly) suitable for both exploration and presentation:
+
+1. No knowledge of web technologies required (**start-up cost**)
+2. Produce sophisticated graphics via standalone HTML (**hosting/maintenance cost**)
+3. Augment the existing "tidyverse" in R (**iteration cost**)
+4. Link to external vis libraries (**startover cost**) 
+5. Easy to use int. techniques that <i>support data analysis tasks</i> (**discovery cost**)
+
+---
+class: middle
+
+# What will I learn?
+
+Create interactive web graphics (from R via ggplot2 and plotly) suitable for both exploration and presentation:
+
+1. No knowledge of web technologies required (**start-up cost**)
+2. <font color="#cc1f29">Produce sophisticated graphics via standalone HTML</font> (**hosting/maintenance cost**)
+3. Augment the existing "tidyverse" in R (**iteration cost**)
+4. Link to external vis libraries (**startover cost**) 
+5. Easy to use int. techniques that <i>support data analysis tasks</i> (**discovery cost**)
+
+.footnote[
+<font color="#cc1f29"> No server required! </font>
+]
+
+---
+background-image: url(server-client.svg)
+background-size: contain
+class: inverse
+
+
+---
+class: middle
+
+# What will I learn?
+
+Create interactive web graphics (from R via ggplot2 and plotly) suitable for both exploration and presentation:
+
+1. No knowledge of web technologies required (**start-up cost**)
+2. Produce sophisticated graphics via standalone HTML (**hosting/maintenance cost**)
+3. <font color="#cc1f29">Augment the existing "tidyverse" in R</font> (**iteration cost**)
+4. Link to external vis libraries (**startover cost**) 
+5. Easy to use int. techniques that <i>support data analysis tasks</i> (**discovery cost**)
+
+.footnote[
+<font color="#cc1f29"> Especially if you know ggplot2! </font>
+]
 
 ---
 background-image: url(europe.png)
@@ -156,37 +226,71 @@ ggplot(sd, aes(lng, lat + 5*(value / max(value, na.rm = T)))) +
 <iframe src="europe.html" width="100%" height="750" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ---
-class: inverse, center, middle
+class: middle
 
-# Need more convincing?
+# What will I learn?
 
-Tooltips & zooming are cool -- but we can do more! 
+Create interactive web graphics (from R via ggplot2 and plotly) suitable for both exploration and presentation:
 
-plotly supports animation and multiple linked views -- without a web server/shiny!
+1. No knowledge of web technologies required (**start-up cost**)
+2. Produce sophisticated graphics via standalone HTML (**hosting/maintenance cost**)
+3. Augment the existing "tidyverse" in R (**iteration cost**)
+4. <font color="#cc1f29">Link to external vis libraries</font> (**startover cost**) 
+5. Easy to use int. techniques that <i>support data analysis tasks</i> (**discovery cost**)
 
-Let's explore the world of capabilities with examples
-
----
-class: center, middle
-
-<a href="https://twitter.com/jalapic/status/732360615730266112" target="_blank" >
-  <img src="epl.png" height="650" width="600"/>
-</a>
-
----
-
-See `demo("highlight-epl", package = "plotly")`
-
-<a href="epl.html">
-  <div align="center">
-    <img src="epl.gif" width="900" height="500" />
-  </div>
-</a>
+.footnote[
+<font color="#cc1f29"> Let's see an example with plotly and leaflet</font>
+]
 
 ---
-class: bottom, inverse, center
+background-image: url(plotlyLeaflet.gif)
+background-size: contain
 
-TODO: More examples!
+## plotly & leaflet
+
+---
+class: middle
+
+# What will I learn?
+
+Create interactive web graphics (from R via ggplot2 and plotly) suitable for both exploration and presentation:
+
+1. No knowledge of web technologies required (**start-up cost**)
+2. Produce sophisticated graphics via standalone HTML (**hosting/maintenance cost**)
+3. Augment the existing "tidyverse" in R (**iteration cost**)
+4. Link to external vis libraries (**startover cost**) 
+5. <font color="#cc1f29">Easy to use int. techniques that <i>support data analysis tasks</i></font> (**discovery cost**)
+
+.footnote[
+<font color="#cc1f29"> Scope of techniques is huge...best to motivate them through data analysis tasks!  </font>
+]
+
+---
+background-image: url(taxonomy.svg)
+background-size: contain
+class: bottom, inverse
+
+## Techniques that support data analysis [Cook et al 1996](https://www.jstor.org/stable/1390754)
+
+---
+## Finding Gestalt & posing queries
+
+<video width="900" height="500" poster="election.png" controls>
+  <source src="election.mp4" type="video/mp4">
+</video>
+
+
+---
+## Make comparisons (directly or indirectly)
+
+<iframe src="compare.html" width="100%" height="500" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+---
+background-image: url(tour.gif)
+background-size: contain
+class: bottom
+
+## Finding Gestalt & "making comparisons"
 
 ---
 background-image: url(you-can-do-it.gif)

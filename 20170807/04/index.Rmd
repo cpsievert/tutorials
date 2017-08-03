@@ -1,5 +1,5 @@
 ---
-title: "Animation, highlighting, and filtering with plotly"
+title: "Animation and linking views via plotly, crosstalk, and shiny"
 venue: "NYC Data Science"
 type: "online tutorial"
 recording: "none"
