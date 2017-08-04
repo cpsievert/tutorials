@@ -5,6 +5,7 @@ type: "online tutorial"
 recording: "none"
 output:
   xaringan::moon_reader:
+    css: ['default', '../extra.css']
     chakra: "../../templates/remarkjs/libs/remark-latest.min.js"
     nature:
       # approx the golden ratio
@@ -17,7 +18,7 @@ output:
 date: "Twitter: <a href='https://twitter.com/cpsievert'>@cpsievert</a> <br />
 GitHub: <a href='https://github.com/cpsievert'>@cpsievert</a> <br />
 Email: <cpsievert1@gmail.com> <br />
-Web: <https://cpsievert.me/>"
+Web: <https://cpsievert.me/> <img src='../nycds-inverse.png' class='nycds' />"
 author: "Carson Sievert"
 ---
 background-image: url(workflow.svg)
@@ -25,6 +26,8 @@ background-size: contain
 class: inverse
 
 ## Data Science Workflow
+
+<img src="../nycds-inverse.png" class="nycds" />
 
 ???
 
@@ -36,6 +39,8 @@ Concisely captures the main components.
 background-image: url(workflow1.svg)
 background-size: contain
 class: inverse
+
+<img src="../nycds-inverse.png" class="nycds" />
 
 # <font color="#cc1f29"> Expository vis </font>
 
@@ -64,6 +69,8 @@ class: inverse
 background-image: url(workflow2.svg)
 background-size: contain
 class: inverse
+
+<img src="../nycds-inverse.png" class="nycds" />  
 
 # <font color="#cc1f29"> Exploratory vis </font>
 
@@ -100,7 +107,11 @@ knitr::opts_chunk$set(
 ```
 
 ---
+background-image: url(../nycds.png)
+background-size: 150px
+background-position: 90% 8%
 class: middle
+
 
 # What will I learn?
 
@@ -113,6 +124,9 @@ Create interactive web graphics (from R via ggplot2 and plotly) suitable for bot
 5. Easy to use int. techniques that <i>support data analysis tasks</i> (**discovery cost**)
 
 ---
+background-image: url(../nycds.png)
+background-size: 150px
+background-position: 90% 8%
 class: middle
 
 # What will I learn?
@@ -136,6 +150,9 @@ class: inverse
 
 
 ---
+background-image: url(../nycds.png)
+background-size: 150px
+background-position: 90% 8%
 class: middle
 
 # What will I learn?
@@ -222,10 +239,16 @@ ggplot(sd, aes(lng, lat + 5*(value / max(value, na.rm = T)))) +
 ```
 
 ---
+background-image: url(../nycds.png)
+background-size: 150px
+background-position: 90% 8%
 
 <iframe src="europe.html" width="100%" height="750" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ---
+background-image: url(../nycds.png)
+background-size: 150px
+background-position: 90% 8%
 class: middle
 
 # What will I learn?
@@ -246,9 +269,14 @@ Create interactive web graphics (from R via ggplot2 and plotly) suitable for bot
 background-image: url(plotlyLeaflet.gif)
 background-size: contain
 
+<img src="../nycds.png" class="nycds" />
+
 ## plotly & leaflet
 
 ---
+background-image: url(../nycds.png)
+background-size: 150px
+background-position: 90% 8%
 class: middle
 
 # What will I learn?
@@ -270,9 +298,15 @@ background-image: url(taxonomy.svg)
 background-size: contain
 class: bottom, inverse
 
+<img src="../nycds-inverse.png" class="nycds" />
+
 ## Techniques that support data analysis [Cook et al 1996](https://www.jstor.org/stable/1390754)
 
 ---
+background-image: url(../nycds.png)
+background-size: 150px
+background-position: 90% 8%
+
 ## Finding Gestalt & posing queries
 
 <video width="900" height="500" poster="election.png" controls>
@@ -281,6 +315,10 @@ class: bottom, inverse
 
 
 ---
+background-image: url(../nycds.png)
+background-size: 150px
+background-position: 90% 8%
+
 ## Make comparisons (directly or indirectly)
 
 <iframe src="compare.html" width="100%" height="500" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
@@ -290,11 +328,15 @@ background-image: url(tour.gif)
 background-size: contain
 class: bottom
 
+<img src="../nycds.png" class="nycds" />
+
 ## Finding Gestalt & "making comparisons"
 
 ---
 background-image: url(you-can-do-it.gif)
 background-size: contain
 class: bottom, inverse, center
+
+<img src="../nycds-inverse.png" class="nycds" />
 
 <p></p>New to R? Lets cover some [fundamentals](basics.Rmd)

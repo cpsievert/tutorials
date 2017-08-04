@@ -5,6 +5,7 @@ type: "online tutorial"
 recording: "none"
 output:
   xaringan::moon_reader:
+    css: ['default', '../extra.css']
     chakra: "../../templates/remarkjs/libs/remark-latest.min.js"
     nature:
       # approx the golden ratio
@@ -17,9 +18,11 @@ output:
 date: "Twitter: <a href='https://twitter.com/cpsievert'>@cpsievert</a> <br />
 GitHub: <a href='https://github.com/cpsievert'>@cpsievert</a> <br />
 Email: <cpsievert1@gmail.com> <br />
-Web: <https://cpsievert.me/>"
+Web: <https://cpsievert.me/> <img src='../nycds-inverse.png' class='nycds' />"
 author: "Carson Sievert"
 ---
+background-image: url(data.png)
+background-size: contain
 
 ```{r, include = FALSE}
 library(plotly)
@@ -35,9 +38,7 @@ knitr::opts_chunk$set(
 
 ## R's basic data structures
 
-<div align="center" >
-  <img src="data.png" width="800" height="300"/>
-</div>
+<img src='../nycds.png' class='nycds' />
 
 .footnote[
 Read Hadley Wickham's brilliant chapter on data structures http://adv-r.had.co.nz/Data-structures.html
@@ -45,11 +46,12 @@ Read Hadley Wickham's brilliant chapter on data structures http://adv-r.had.co.n
 
 
 ---
+background-image: url(data2.png)
+background-size: contain
+
 ## A data frame holds (homo or hetero!) 1d vectors.
 
-<div align="center" >
-  <img src="data2.png" width="800" height="300"/>
-</div>
+<img src='../nycds.png' class='nycds' />
 
 .footnote[
 Read Hadley Wickham's brilliant chapter on data structures http://adv-r.had.co.nz/Data-structures.html
@@ -57,6 +59,8 @@ Read Hadley Wickham's brilliant chapter on data structures http://adv-r.had.co.n
 
 ---
 ## More than a table
+
+<img src='../nycds.png' class='nycds' />
 
 <div align="center" >
   <img src="list-column.png" width="400" height="400"/>
@@ -71,6 +75,8 @@ class: inverse, middle, center
 background-image: url(https://media.giphy.com/media/h4Z6RfuQycdiM/giphy.gif)
 background-size: contain
 
+<img src='../nycds-inverse.png' class='nycds' />
+
 
 # How is this useful?
 
@@ -78,16 +84,22 @@ background-size: contain
 
 # What data goes into drawing this map?
 
+<img src='../nycds.png' class='nycds' />
+
 <iframe src="map.html" width="100%" height="550" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ---
 background-image: url(view.png)
 background-size: contain
 
+<img src='../nycds.png' class='nycds' />
+
 ---
 background-image: url(view.png)
 background-size: contain
 class: inverse, bottom, center
+
+<img src='../nycds-inverse.png' class='nycds' />
 
 # Rows should represent the unit of interest! Why?
 
@@ -136,6 +148,7 @@ ggplot(usa) + geom_sf()
 
 ## Simple features (sf)
 
+<img src='../nycds.png' class='nycds' />
 
 Simple features (sf) objects contain all the information required to plot them.
 
@@ -169,6 +182,8 @@ class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
 
+<img src='../nycds-inverse.png' class='nycds' />
+
 ## Your turn
 
 See `help(geom_sf, package = "ggplot2")`. Can you color each state according to its population using `geom_sf()`?
@@ -180,6 +195,8 @@ From now on, when you see this background, it means I have an exercise for you!
 ]
 
 ---
+
+<img src='../nycds.png' class='nycds' />
 
 ## Choropleth map of 2010 population
 
@@ -207,11 +224,15 @@ class: inverse, center
 background-image: url(magic.gif)
 background-size: contain
 
+<img src='../nycds-inverse.png' class='nycds' />
+
 # How does it work?
 
 ---
 
 ## ggplotly returns a plotly htmlwidget
+
+<img src='../nycds.png' class='nycds' />
 
 ```{r}
 class(p)
@@ -232,6 +253,8 @@ The htmlwidgets gallery has 85 registered widgets to date! http://gallery.htmlwi
 ---
 class: inverse, middle, center
 
+<img src='../nycds-inverse.png' class='nycds' />
+
 # Three ways to widget<sup>1</sup>
 
 `ggplotly()`: translates ggplot to widget
@@ -248,10 +271,11 @@ class: inverse, middle, center
 
 ## What happens when you print a widget?
 
+<img src='../nycds.png' class='nycds' />
+
 <div align="center" >
   <img src="printing.svg" width="500" height="390"/>
 </div>
-
 
 .footnote[
 All htmlwidgets take this same (R list -> JSON -> JavaScript -> HTML) approach!
@@ -261,6 +285,8 @@ Every htmlwidget is defined through an R list. Any R list maps to JSON through *
 
 ---
 ## Make a widget from a list
+
+<img src='../nycds.png' class='nycds' />
 
 ```r
 barchart <- list(
@@ -276,6 +302,9 @@ as_widget(barchart)
 <iframe src="bars.html" width="100%" height="400" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## PSA: don't use lists, use `plot_ly()`!
 
 ```{r, eval = TRUE}
@@ -291,6 +320,9 @@ plot_ly() %>%
 
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Inspect the JSON behind any widget
 
 ```{r}
@@ -307,6 +339,9 @@ The other attributes are unique to the R package (don't worry about them).
 
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Modify any widget
 
 `style()` modifies data attributes. `layout()` modifies the layout.
@@ -320,6 +355,10 @@ gg2 <- gg %>%
 <iframe src="map3.html" width="100%" height="550" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ---
+
+
+<img src='../nycds.png' class='nycds' />
+
 # Note the modification!
 
 ```{r}
@@ -354,6 +393,8 @@ class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
 
+<img src='../nycds-inverse.png' class='nycds' />
+
 ## Your Turn
 
 Use `style()` to customize the [hoverlabel](https://plot.ly/r/reference/#scatter-hoverlabel) attribute, which controls the styling of the tooltip (hint: if you get stuck, see plotly's [readme](https://github.com/ropensci/plotly#readme)).
@@ -362,6 +403,8 @@ Use `style()` to customize the [hoverlabel](https://plot.ly/r/reference/#scatter
 class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
+
+<img src='../nycds-inverse.png' class='nycds' />
 
 ## Your Turn
 
@@ -378,6 +421,9 @@ style(gg, hoverlabel = list(bgcolor = "white"))
 ```
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Can also add data to any widget
 
 There are a number of `add_*()` functions (e.g., `add_bars()`, `add_polygons()`, `add_trace()`).
@@ -390,6 +436,9 @@ add_polygons(gg, x = d$x, y = d$y, color = I("red"), inherit = FALSE)
 <iframe src="map4.html" width="100%" height="550" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Resources for studying the figure reference
 
 https://plot.ly/r/reference/
@@ -407,6 +456,8 @@ class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
 
+<img src='../nycds-inverse.png' class='nycds' />
+
 ## Your Turn
 
 (1) Use the `st_centroid()` function from the **sf** package to find the center point of each state. Plot a point in the middle of each state.
@@ -419,6 +470,9 @@ Solution is [here](02-your-turn.R)
 ]
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Raster objects
 
 * Raster objects are basically a matrix of color codes. These objects can be used to represent bitmap images. 
@@ -430,6 +484,9 @@ plot(r)
 ```
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Embedding raster objects in plotly
 
 ```r
@@ -456,6 +513,9 @@ plot_ly() %>%
 <iframe src="raster.html" width="100%" height="400" seamless="seamless" frameBorder="0"> </iframe>
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## ggmap objects are bitmap images!
 
 ```{r}
@@ -472,6 +532,9 @@ p <- ggmap(basemap) +
 </div>
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Add zoom/pan/tooltips via `ggplotly()`
 
 ```{r}
@@ -481,6 +544,9 @@ ggplotly(p)
 <iframe src="ggmap.html" width="100%" height="500" seamless="seamless" frameBorder="0"> </iframe>
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## A crossroads in ggplot2 mapping 
 
 * Going forward, `geom_sf()` will be the preferred way to map in **ggplot2**, but it is still under development.
@@ -499,6 +565,9 @@ ggplot() + geom_sf(data = world1)
 
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Finding map projections
 
 * <http://www.spatialreference.org/ref/> is invaluable for finding map projections.
@@ -508,6 +577,9 @@ ggplot() + geom_sf(data = world1)
 </div>
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Mollweide projection of Canada
 
 ```{r}
@@ -522,6 +594,9 @@ ggplot() + geom_sf(data = canada2)
 </div>
 
 ---
+
+<img src='../nycds.png' class='nycds' />
+
 ## Now with `ggplotly()`
 
 ```{r}
@@ -532,6 +607,8 @@ ggplotly()
 
 ---
 class: inverse 
+
+<img src='../nycds-inverse.png' class='nycds' />
 
 ## In summary
 
@@ -554,6 +631,8 @@ class: inverse
 class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
+
+<img src='../nycds-inverse.png' class='nycds' />
 
 ## Your turn
 

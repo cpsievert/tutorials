@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Animation, highlighting, and filtering with plotly</title>
+    <title>Animation and linking views via plotly, crosstalk, and shiny</title>
     <meta charset="utf-8">
     <meta name="author" content="Carson Sievert" />
     <link href="index_files/remark-css-0.0.1/example.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../extra.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Animation, highlighting, and filtering with plotly
+# Animation and linking views via plotly, crosstalk, and shiny
 ### Carson Sievert
-### Twitter: <a href='https://twitter.com/cpsievert'><span class="citation">@cpsievert</span></a> <br /> GitHub: <a href='https://github.com/cpsievert'><span class="citation">@cpsievert</span></a> <br /> Email: <a href="mailto:cpsievert1@gmail.com">cpsievert1@gmail.com</a> <br /> Web: <a href="https://cpsievert.me/" class="uri">https://cpsievert.me/</a>
+### Twitter: <a href='https://twitter.com/cpsievert'><span class="citation">@cpsievert</span></a> <br /> GitHub: <a href='https://github.com/cpsievert'><span class="citation">@cpsievert</span></a> <br /> Email: <a href="mailto:cpsievert1@gmail.com">cpsievert1@gmail.com</a> <br /> Web: <a href="https://cpsievert.me/" class="uri">https://cpsievert.me/</a> <img src='/Users/cpsievert/github/tutorials/20170807/nycds-inverse.png' class='nycds' />
 
 ---
 
 
+&lt;img src='../nycds.png' class='nycds' /&gt;
 
 
 
@@ -44,6 +46,10 @@ txhousing
 
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
+
 ## Abilene monthly sales
 
 
@@ -57,6 +63,10 @@ ggplotly(p, dynamicTicks = "x")
 &lt;iframe src="01.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
+
 ## Abilene monthly sales, animated by year
 
 
@@ -70,6 +80,10 @@ ggplotly(p)
 
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
+
 ## Animations are layer specific
 
 
@@ -83,6 +97,10 @@ ggplotly(p)
 &lt;iframe src="04.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
+
 ## Easily change animation options
 
 
@@ -95,6 +113,10 @@ animation_opts(
 &lt;iframe src="05.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
+
 ## Easily change button appearance
 
 
@@ -107,6 +129,9 @@ animation_button(
 &lt;iframe src="06.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Easily change slider appearance
 
 
@@ -122,6 +147,8 @@ animation_slider(
 class: center, bottom
 background-image: url(hans-rosling.jpg)
 background-size: contain
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
 
 ## Gapminder data
 
@@ -144,6 +171,8 @@ class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
 
+&lt;img src='../nycds-inverse.png' class='nycds' /&gt;
+
 ## Your Turn
 
 Read through [this thread](https://github.com/ropensci/plotly/issues/957). Can you take what is there to make a *cumulative* animation of the gapminder data?
@@ -159,9 +188,14 @@ Solution is [here](01-your-turn.R)
 ---
 class: middle, center, inverse
 
+&lt;img src='../nycds-inverse.png' class='nycds' /&gt;
+
 # Highlighting (i.e., brushing) in multiple linked views 
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Highlighting via crosstalk
 
 
@@ -176,6 +210,10 @@ ggplotly(p, tooltip = "year")
 &lt;iframe src="08.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
+
 ## Highlighting in small multiples
 
 
@@ -190,6 +228,9 @@ p &lt;- ggplot(sd, aes(month, median, group = year)) + geom_line() +
 &lt;iframe src="09.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Or in a scatterplot matrix
 
 
@@ -206,6 +247,9 @@ txhousing %&gt;%
 &lt;/a&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Highlight on hover
 
 
@@ -216,6 +260,9 @@ highlight(gg, "plotly_hover")
 &lt;iframe src="09b.html" width="100%" height="500" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Set default values
 
 
@@ -226,6 +273,9 @@ highlight(gg, defaultValues = "2006")
 &lt;iframe src="09c.html" width="100%" height="500" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Making comparisons with dynamic brush
 
 
@@ -238,6 +288,9 @@ highlight(
 &lt;iframe src="10.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Customize the appearance of selections
 
 
@@ -251,6 +304,9 @@ highlight(
 &lt;iframe src="11.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## m-to-n linking
 
 
@@ -265,6 +321,8 @@ class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
 
+&lt;img src='../nycds-inverse.png' class='nycds' /&gt;
+
 ## Your turn
 
 (1) Modify [the last demo](https://github.com/ropensci/plotly/blob/master/demo/crosstalk-highlight-pipeline.R) to have persistent and dynamic selection. Try supplying your own custom color palette.
@@ -277,6 +335,8 @@ class: bottom, left
 background-image: url(pipeline.svg)
 background-size: contain
 
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## The 'data pipeline'
 
 Where does the pipeline &lt;br /&gt; 'live'?
@@ -286,6 +346,8 @@ Where does the pipeline &lt;br /&gt; 'live'?
 background-image: url(crosstalk.svg)
 background-size: contain
 
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## The general model
 
 .footnote[
@@ -293,6 +355,9 @@ All the "updating logic" is self-contained in your browser via JavaScript, makin
 ]
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Binning (i.e., transforming) the target
 
 
@@ -303,6 +368,9 @@ demo("crosstalk-highlight-binned-target", package = "plotly")
 &lt;iframe src="11c.html" width="100%" height="480" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Binning (i.e., transforming) the target
 
 
@@ -314,6 +382,8 @@ demo("crosstalk-highlight-binned-target", package = "plotly")
 
 ---
 class: inverse, center, middle
+
+&lt;img src='../nycds-inverse.png' class='nycds' /&gt;
 
 # You can only go so far without shiny...
 
@@ -348,11 +418,16 @@ background-size: contain
 ---
 class: center, middle
 
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 # I promise...
 
 We will get to shiny, but we can do *much* more *without* shiny&lt;sup&gt;1&lt;/sup&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Animating selections
 
 
@@ -366,6 +441,9 @@ highlight(ggplotly(p), "plotly_selected")
 &lt;iframe src="13.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Avoid overplotting
 
 
@@ -381,6 +459,8 @@ ggplotly(gg + scale_x_log10())
 
 ---
 
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 
 ```r
 demo("animation-tour-USArrests", package = "plotly")
@@ -392,6 +472,8 @@ demo("animation-tour-USArrests", package = "plotly")
 
 ---
 class: inverse, middle, center
+
+&lt;img src='../nycds-inverse.png' class='nycds' /&gt;
 
 # Filter vs selection
 
@@ -406,8 +488,10 @@ They are similar, but axes respond (i.e., relayout) to *filter* events.&lt;sup&g
 ]
 
 ---
-## Crosstalk's filtering widgets
 
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
+## Crosstalk's filtering widgets
 
 
 ```r
@@ -423,6 +507,9 @@ widgets
 &lt;iframe src="crosstalk/1/index.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Filtering
 
 
@@ -438,6 +525,9 @@ bscols(
 
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Talk to other crosstalk-enabled widgets
 
 
@@ -457,6 +547,8 @@ class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
 
+&lt;img src='../nycds-inverse.png' class='nycds' /&gt;
+
 ## Your Turn
 
 Add some filter widgets to the earthquakes example.
@@ -471,6 +563,8 @@ Solution is [here](02-your-turn.R)
 
 ---
 class: center, middle, inverse
+
+&lt;img src='../nycds-inverse.png' class='nycds' /&gt;
 
 ## Expectations vs reality
 
@@ -492,6 +586,9 @@ class: center, middle, inverse
 ]
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## Shiny is a web application framework
 
 Web applications are generally more powerful and flexible; but also more complicated, less responsive, and difficult to share.
@@ -500,9 +597,12 @@ Web applications are generally more powerful and flexible; but also more complic
   &lt;img src="server-client.svg" width="550" height="350" /&gt;
 &lt;/div&gt;
 
-**Remember**: examples so far can saved as _self-contained_ HTML via `htmlwidgets::saveWidget()` and/or `htmltools::html_print()` 
+**Remember**: examples so far can saved as _self-contained_ HTML via `htmlwidgets::saveWidget()` and/or `htmltools::save_html()` 
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## [Accessing user events](events-shiny.R) in shiny
 
 &lt;div align="center" &gt;
@@ -512,6 +612,9 @@ Web applications are generally more powerful and flexible; but also more complic
 This functionality is tied to `plotOutput()`, which doesn't support web-based graphics.
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## [Accessing plotly events](events-plotly.R) in shiny
 
 
@@ -523,6 +626,8 @@ This functionality is tied to `plotOutput()`, which doesn't support web-based gr
 class: inverse, center
 background-image: url(../your-turn.jpeg)
 background-size: contain
+
+&lt;img src='../nycds-inverse.png' class='nycds' /&gt;
 
 ## Your Turn
 
@@ -540,6 +645,9 @@ Program an app to populate a bar chart reflecting the selection, sort of like th
 
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## [Targeting events](events-plotly.R)
 
 
@@ -548,6 +656,9 @@ Program an app to populate a bar chart reflecting the selection, sort of like th
 &lt;/div&gt;
 
 ---
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
+
 ## In summary
 
 * Use the `frame` aesthetic to create animations
@@ -563,10 +674,9 @@ Program an app to populate a bar chart reflecting the selection, sort of like th
 * Use `event_data()` to access/use plotly events in shiny
 
 ---
-background-image: url(plotly.svg)
-background-size: 100px
-background-position: 90% 8%
 class: center, middle
+
+&lt;img src='../nycds.png' class='nycds' /&gt;
 
 # Thanks!
 
