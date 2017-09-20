@@ -348,7 +348,7 @@ The other attributes are unique to the R package (don't worry about them).
 
 ```{r}
 gg2 <- gg %>%
-  style(mode = "markers+lines", traces = 2) %>%
+  style(mode = "markers+lines", marker = list(color = "red"), traces = 2) %>%
   layout(title = "A map of 2010 population", margin = list(t = 30))
 ```
 

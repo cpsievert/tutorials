@@ -1,6 +1,7 @@
 library(sf)
 library(dplyr)
 library(albersusa)
+library(plotly)
 
 usa <- usa_sf("laea")
 
