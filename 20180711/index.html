@@ -34,7 +34,7 @@ background-size: contain
 
 Open the slides &lt;https://bit.ly/useR18&gt;
 
-Go to this address &lt;https://rstudio.cloud/project/14090&gt;. Follow the directions you see in the 'hello.R' script.
+Go to this address &lt;https://rstudio.cloud/project/14090&gt;
 
 
 .footnote[
@@ -52,9 +52,12 @@ class: middle
   
   * Thesis: [Interfacing R with web technologies](http://lib.dr.iastate.edu/etd/15422/)
   
-* CEO of [Sievert Consulting](https://consulting.cpsievert.me/) LLC (Jan 2017)
-
-  * Clients: plotly, NOAA, Sandia Labs, O'Reilly
+* CEO of [Sievert Consulting](https://consulting.cpsievert.me/) LLC (Jan 2017 - Present)
+  * Services: product development, statistical modeling, and R training  
+  * Clients: plotly, Sandia Labs, NOAA, TCB Analytics
+  
+* Expert at Library of Congress (June 2018 - Present)
+  * Provide statistical expertise for DoD, BJS, and other US Federal Government projects as needed
   
 * I ❤️ interactive data visualization
   
@@ -169,7 +172,25 @@ background-image: url(server-client-dim.svg)
 background-size: contain
 class: middle, right
 
+# Client-side technologies: HTML, JavaScript, CSS
+
+---
+background-image: url(server-client-dim.svg)
+background-size: contain
+class: middle, right
+
 # Easier to share, scale, and maintain
+
+---
+background-image: url(server-client-dim.svg)
+background-size: contain
+class: middle, right
+
+# DYK: Many R packages generate HTML/JavaScript...
+
+.footnote[
+...via **htmlwidgets** and **htmltools**
+]
 
 ---
 background-image: url(server-client-dim.svg)
@@ -181,7 +202,7 @@ class: middle, right
 ---
 ## An example of (standalone) linked views
 
-&lt;iframe src="txmissing.html" width="100%" height="485" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+&lt;iframe src="txmissing.html" width="100%" height="650" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
 background-image: url(pipeline.svg)
@@ -189,15 +210,6 @@ background-size: contain
 class: bottom, left 
 
 ## "Linking as a &lt;br&gt; database query"
-
----
-class: middle, inverse
-
-&lt;h2 align="center"&gt; Not everything can be (reasonably) framed as a database query!&lt;/h2&gt;
-
-.footnote[
-#### But a suprising amount can! 
-]
 
 ---
 class: inverse, middle, principles
@@ -212,9 +224,35 @@ Think of a question you'd like to answer using familiar data. Think of a (linked
 ---
 
 Time: 5 minutes
-
-Feel free to introduce me to your personal projects!
 ]
+
+---
+class: middle, principles
+
+&lt;h2 align="center"&gt; plotly's client-side reactivity options &lt;/h2&gt;
+
+* Graphical (database) queries
+  * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
+  
+* Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+
+* Custom JavaScript via `htmlwidgets::onRender()`
+  * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
+  
+  
+---
+class: middle, principles
+
+&lt;h2 align="center"&gt; plotly's client-side reactivity options &lt;/h2&gt;
+
+
+* __Graphical (database) queries__
+  * __In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).__
+  
+* Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+
+* Custom JavaScript via `htmlwidgets::onRender()`
+  * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
 
 
 ---
@@ -351,17 +389,358 @@ background-size: contain
 
 &lt;h2 align="center"&gt; Your Turn &lt;/h2&gt;
 
-Run the following R code:
+Run the following R code to generate the soccer visualization:
 
 ```r
 demo("crosstalk-highlight-epl-2", package = "plotly")
 ```
 
-This generates the soccer visualization. Compare the performance of 'Liverpool' with 'Chelsea'. What other info can you extract from this graphic?
+1. Compare the performance of 'Liverpool' with 'Chelsea'. What other info can you extract from this graphic?
+2. Run `plotly_json()`. What does this return?
 
 &lt;hr&gt;
 
 Time: 5 minutes
+
+---
+## Inspect the underlying data
+
+`plotly_json()` returns the underlying JSON of any **plotly** graph -- nice way to learn how `ggplotly()` maps to [plotly.js](https://plot.ly/javascript/)!
+
+&lt;iframe src="epl-json.html" width="100%" height="550" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+class: inverse
+background-image: url(printing.svg)
+background-size: contain
+
+---
+## Want to work with plotly.js directly?
+
+`schema()` returns the official plotly.js [figure reference](https://plot.ly/r/reference/) tied to the R package
+
+&lt;iframe src="schema.html" width="100%" height="550" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+
+&lt;h2 align="center"&gt; &lt;b&gt;plotly&lt;/b&gt; is much more than &lt;code&gt;ggplotly()&lt;/code&gt;! &lt;/h2&gt;
+
+#### Initiate a plotly graph (without ggplot2):
+
+* `plot_ly()`: non-ggplot2 interface to underlying [plotly.js](https://github.com/plotly/plotly.js) library
+* `plot_mapbox()`: `plot_ly()` wrapper/shortcut for [scattermapbox](https://plot.ly/r/scattermapbox/)
+* `plot_geo()`: `plot_ly()` wrapper/shortcut for [scattergeo](https://plot.ly/r/choropleth-maps/)
+
+#### Add data (i.e., traces) to a graph
+
+* `add_markers()`, `add_bars()`, etc (see [`help(add_trace)`](https://www.rdocumentation.org/packages/plotly/versions/4.7.1/topics/add_trace) for full list)
+
+#### Modify a graph (before printing)
+
+* `style()` to modify traces of an existing plotly graph
+* `layout()` to add/modify to a [layout component](https://plot.ly/r/reference/#layout)
+
+#### Tools for talking with plotly cloud
+
+* Send data and/or graphs with `api_create()`
+* Retrieve data and/or graphs with `api_download_plot()`/`api_download_grid()`
+* Do anything the [plotly's server API](https://api.plot.ly/v2/) supports with `api()`
+
+---
+### 'Smart' trace type defaults
+
+```r
+subplot(
+  plot_ly(diamonds, x = ~cut, y = ~clarity),
+  plot_ly(diamonds, x = ~cut, color = ~clarity),
+  nrows = 2, shareX = TRUE
+)
+```
+
+&lt;iframe src="diamonds.html" width="90%" height="550" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+## Aggregating selections
+
+&lt;iframe src="02-binned-target-a.html" width="100%" height="550" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+
+```r
+library(plotly)
+d &lt;- highlight_key(mpg)
+
+dots &lt;- plot_ly(d, color = ~class, x = ~displ, y = ~cyl)
+boxs &lt;- plot_ly(d, color = ~class, x = ~class, y = ~cty) %&gt;% 
+  add_boxplot()
+bars &lt;- plot_ly(d, colors = "Set1", x = ~class, color = ~class)
+
+subplot(dots, boxs, titleX = TRUE, titleY = TRUE) %&gt;%
+  subplot(bars, nrows = 2, titleX = TRUE, titleY = TRUE) %&gt;%
+  layout(
+    barmode = "overlay",
+    showlegend = FALSE
+  ) %&gt;%
+  highlight("plotly_selected")
+```
+
+---
+## Aggregating selections (continued)
+
+&lt;iframe src="02-binned-target-b.html" width="100%" height="400" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+
+
+```r
+library(plotly)
+d &lt;- highlight_key(mtcars)
+sp &lt;- plot_ly(d, x = ~mpg, y = ~disp) %&gt;% 
+  add_markers(color = I("black"))
+
+# 'statistical trace types'
+hist &lt;- plot_ly(d, x = ~factor(cyl)) %&gt;% add_histogram(color = I("black"))
+box &lt;- plot_ly(d, y = ~disp, color = I("black")) %&gt;% add_boxplot(name = " ")
+violin &lt;- plot_ly(d, y = ~disp, color = I("black")) %&gt;% add_trace(type = "violin", name = " ")
+
+subplot(sp, box, violin, shareY = TRUE, titleX = TRUE, titleY = TRUE) %&gt;%
+  subplot(hist, widths = c(.75, .25), titleX = TRUE, titleY = TRUE) %&gt;%
+  layout(
+    barmode = "overlay", 
+    title = "Click and drag scatterplot",
+    showlegend = FALSE
+  ) %&gt;%
+  highlight("plotly_selected")
+```
+
+
+---
+## Aggregating selections (continued)
+
+&lt;iframe src="02-binned-target-c.html" width="100%" height="500" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+
+```r
+library(plotly)
+tx &lt;- highlight_key(txhousing, ~city)
+
+p1 &lt;- ggplot(tx, aes(date, median, group = city)) + geom_line()
+gg1 &lt;- ggplotly(p1, tooltip = c("city", "date", "median"))
+p2 &lt;- plot_ly(tx, x = ~median, color = I("black")) %&gt;% 
+  add_histogram(histnorm = "probability density")
+
+subplot(gg1, p2, titleX = TRUE, titleY = TRUE) %&gt;% 
+  layout(barmode = "overlay") %&gt;%
+  highlight(dynamic = TRUE, selected = attrs_selected(opacity = 0.3))
+```
+
+
+---
+## Talk with other htmlwidgets
+
+
+```r
+library(leaflet)
+sd &lt;- highlight_key(quakes)
+p &lt;- plot_ly(sd, x = ~depth, y = ~mag) %&gt;% add_markers(alpha = 0.5) %&gt;% highlight("plotly_selected")
+map &lt;- leaflet(sd) %&gt;% addTiles() %&gt;% addCircles()
+crosstalk::bscols(p, map)
+```
+
+&lt;iframe src="05-leaflet.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+### Linking plotly with DT
+
+```r
+library(plotly)
+data(trails, package = "mapview")
+tsd &lt;- highlight_key(trails)
+crosstalk::bscols(
+  plot_mapbox(tsd, text = ~FKN, hoverinfo = "text"),
+  DT::datatable(tsd)
+)
+```
+
+&lt;iframe src="05-DT.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+class: center, middle, inverse
+
+## Expectations vs reality
+
+.pull-left[
+  &lt;img src="https://i.imgur.com/fZIenVE.jpg" height = "500" /&gt;
+]
+
+.pull-right[
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+
+  **plotly** has advanced support for *highlight* events (e.g., `persistent`, `dynamic`, `selectize`)
+
+  Other [**crosstalk**-enabled htmlwidgets](https://rstudio.github.io/crosstalk/) likely won't respect (non-default) `highlight()` options.
+  
+  However, *filter* events should generally be supported.
+]
+
+---
+class: inverse, middle, center
+
+# Filter vs highlight
+
+The `highlight()` function sets options for *highlight events*.
+
+*Highlight* events **dim the opacity** of existing marks.
+
+*Filter* events **completely removes** existing marks and rescales axes.
+
+At least currently, *filter* events must be fired from **crosstalk** widgets.
+
+---
+## Crosstalk's filtering widgets
+
+
+```r
+library(crosstalk)
+tx &lt;- highlight_key(txhousing)
+widgets &lt;- bscols(
+  widths = c(12, 12, 12),
+  filter_select("city", "Cities", tx, ~city),
+  filter_slider("sales", "Sales", tx, ~sales),
+  filter_checkbox("year", "Years", tx, ~year, inline = TRUE)
+)
+widgets
+```
+
+&lt;iframe src="03-filter-widgets.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+## Filtering
+
+
+```r
+bscols(
+  widths = c(4, 8), widgets, 
+  plot_ly(tx, x = ~date, y = ~median, showlegend = FALSE) %&gt;% 
+    add_lines(color = ~city, colors = "black")
+)
+```
+
+&lt;iframe src="04-filter.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+class: inverse, middle
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+&lt;h2 align="center"&gt; Your turn &lt;/h2&gt;
+
+1. Use `htmlwidgets::saveWidget()` to save a **plotly** graph (e.g. `plot_ly()`). What's the size of the HTML file it creates?
+2. Use `htmltools::save_html()` to save the **plotly**/**leaflet** example. What's the size of the HTML file it creates?
+3. What's the difference between using `saveWidget()` and `save_html()`? When is one preferred to the other?
+
+.footnote[
+---
+
+Time: 5 minutes
+
+]
+
+---
+class: inverse, middle, principles
+background-image: url(htmltools.svg)
+background-size: contain
+
+
+---
+class: middle, principles
+
+&lt;h2 align="center"&gt; plotly's client-side reactivity options &lt;/h2&gt;
+
+* Graphical (database) queries
+  * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
+  
+* __Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)__
+
+* Custom JavaScript via `htmlwidgets::onRender()`
+  * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
+  
+  
+---
+## Dropdown example
+
+&lt;iframe src="dropdown.html" width="100%" height="500" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+## The implementation
+
+```r
+styles &lt;- schema()$layout$layoutAttributes$mapbox$style$values
+style_buttons &lt;- lapply(styles, function(s) {
+  list(label = s, method = "relayout", args = list("mapbox.style", s))
+})
+
+storms &lt;- sf::st_read(system.file("shape/storms_xyz.shp", package = "sf"), quiet = TRUE)
+plot_mapbox(storms, color = I("red")) %&gt;%
+  layout(
+    title = "Changing the base layer",
+    updatemenus = list(list(y = 0.8, buttons = style_buttons))
+  )
+```
+
+---
+class: middle, principles
+
+&lt;h2 align="center"&gt; plotly's client-side reactivity options &lt;/h2&gt;
+
+* Graphical (database) queries
+  * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
+  
+* Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+
+* __Custom JavaScript via `htmlwidgets::onRender()`__
+  * __Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way__
+  
+---
+### Google search on click
+
+The `customdata` attribute provides a way to attach "meta-data" to visual attributes that you can access with JavaScript
+
+```r
+plot_ly(mtcars, x = ~wt, y = ~mpg) %&gt;%
+  add_markers(customdata = ~paste0("http://google.com/#q=", rownames(mtcars))) %&gt;%
+  htmlwidgets::onRender("function(el, x) {
+    el.on('plotly_click', function(d) {
+      var url = d.points[0].customdata;
+      window.open(url);
+    });
+  }")
+```
+
+&lt;iframe src="google.html" width="100%" height="300" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+---
+class: middle
+
+## Demo
+
+Let's walk through the 'customdata.R' script:
+
+```r
+file.edit("~/customdata.R")
+```
+
+--- 
+
+Left to cover:
+
+* Custom tooltips?
+* Leveraging `plotly_json()` and `schema()`
+* Modifying plotly graphs in shiny
     </textarea>
 <script src="../templates/remarkjs/libs/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
