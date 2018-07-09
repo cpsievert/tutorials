@@ -52,7 +52,7 @@ Time: 5 minutes
 
 
 ---
-class: middle
+class: middle, principles
 
 <h3 align="center"> About me </h3>
 
@@ -65,7 +65,7 @@ class: middle
   * Clients: plotly, Sandia Labs, NOAA, TCB Analytics
   
 * Expert at Library of Congress (June 2018 - Present)
-  * Provide statistical expertise for DoD, BJS, and other US Federal Government projects as needed
+  * Provide statistical expertise for DoD, BJS, and other US Federal Government projects
   
 * I `r emo::ji("heart")` interactive data visualization
   
@@ -237,7 +237,7 @@ background-size: contain
 
 <h2 align="center"> Your Turn </h2>
 
-Think of a question you'd like to answer using familiar data. Think of a (linked) graphic that could help address the question (bonus: draw it)!
+Think of a question you'd like to ask of your data via a (linked) interactive graphic (bonus: draw it)!
 
 .footnote[
 ---
@@ -250,12 +250,12 @@ class: middle, principles, inverse
 
 <h2 align="center"> plotly's client-side reactivity options </h2>
 
-* Graphical (database) queries
+1. Graphical (database) queries
   * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
   
-* Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+2. Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
 
-* Custom JavaScript via `htmlwidgets::onRender()`
+3. Custom JavaScript via `htmlwidgets::onRender()`
   * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
   
   
@@ -265,12 +265,12 @@ class: middle, principles, inverse
 <h2 align="center"> plotly's client-side reactivity options </h2>
 
 
-* __Graphical (database) queries__
+1. __Graphical (database) queries__
   * __In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).__
   
-* Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+2. Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
 
-* Custom JavaScript via `htmlwidgets::onRender()`
+3. Custom JavaScript via `htmlwidgets::onRender()`
   * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
 
 
@@ -405,6 +405,10 @@ background-size: contain
 
 # Generally useful for comparing within/across panels!
 
+.footnote[
+[interactive](epl.html)
+]
+
 ---
 class: inverse, middle, principles
 background-image: url(your-turn.jpeg)
@@ -450,7 +454,7 @@ background-size: contain
 
 #### Initiate a plotly graph (without ggplot2):
 
-* `plot_ly()`: non-ggplot2 interface to underlying [plotly.js](https://github.com/plotly/plotly.js) library
+* `plot_ly()`: 'flexible' interface to [plotly.js](https://github.com/plotly/plotly.js)
 * `plot_mapbox()`: `plot_ly()` wrapper/shortcut for [scattermapbox](https://plot.ly/r/scattermapbox/)
 * `plot_geo()`: `plot_ly()` wrapper/shortcut for [scattergeo](https://plot.ly/r/choropleth-maps/)
 
@@ -481,6 +485,23 @@ subplot(
 ```
 
 <iframe src="diamonds.html" width="90%" height="550" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+---
+class: inverse, middle, principles
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+<h2 align="center"> Your Turn </h2>
+
+Use `plotly_json()` to study how the R code (on the [last slide](#33)) maps to JSON.
+
+**NOTE**: We don't have time to cover `plot_ly()` in depth..learn more in the [plotly cookbook](https://plotly-book.cpsievert.me/the-plotly-cookbook.html) chapter of the [plotly for R book](https://plotly-book.cpsievert.me/)
+
+.footnote[
+---
+
+Time: 3 minutes
+]
 
 ---
 ## Aggregating selections
@@ -657,7 +678,7 @@ background-size: contain
 <h2 align="center"> Your turn </h2>
 
 1. Use `htmlwidgets::saveWidget()` to save a **plotly** graph (e.g. `plot_ly()`). What's the size of the HTML file it creates?
-2. Use `htmltools::save_html()` to save the **plotly**/**leaflet** example. What's the size of the HTML file it creates?
+2. Use `htmltools::save_html()` to save the **plotly**+**leaflet** example. What's the size of the HTML file it creates?
 3. What's the difference between using `saveWidget()` and `save_html()`? When is one preferred to the other?
 
 .footnote[
@@ -678,12 +699,12 @@ class: middle, principles, inverse
 
 <h2 align="center"> plotly's client-side reactivity options </h2>
 
-* Graphical (database) queries
+1. Graphical (database) queries
   * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
   
-* __Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)__
+2. __Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)__
 
-* Custom JavaScript via `htmlwidgets::onRender()`
+3. Custom JavaScript via `htmlwidgets::onRender()`
   * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
   
   
@@ -714,12 +735,12 @@ class: middle, principles, inverse
 
 <h2 align="center"> plotly's client-side reactivity options </h2>
 
-* Graphical (database) queries
+1. Graphical (database) queries
   * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
   
-* Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+2. Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
 
-* __Custom JavaScript via `htmlwidgets::onRender()`__
+3. __Custom JavaScript via `htmlwidgets::onRender()`__
   * __Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way__
   
 ---
@@ -857,14 +878,14 @@ Time: 10 minutes
 Hint: some of these shiny example apps will be helpful (e.g. `proxy_restyle_economics`) -- <https://github.com/ropensci/plotly/tree/master/inst/examples/shiny>
 
 ---
-class: inverse, center, middle
+class: inverse, center, middle, principles
 background-image: url(your-turn.jpeg)
 background-size: contain
 
 
 ## Your turn
 
-Remember [this](#17) "your turn"? Let's try to implement that idea!
+Remember [this](#17) "your turn"? Let's try to implement it!
 
 
 ---
@@ -877,8 +898,8 @@ class: center, middle
 
 Resources for more learning:
 
-https://plot.ly/r/ <br />
 https://plotly-book.cpsievert.me <br />
+https://blog.cpsievert.me <br />
 https://talks.cpsievert.me <br />
 https://github.com/cpsievert/apps <br />
 https://github.com/cpsievert/pedestrians <br />
