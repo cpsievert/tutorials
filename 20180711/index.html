@@ -227,7 +227,7 @@ Time: 5 minutes
 ]
 
 ---
-class: middle, principles
+class: middle, principles, inverse
 
 &lt;h2 align="center"&gt; plotly's client-side reactivity options &lt;/h2&gt;
 
@@ -241,7 +241,7 @@ class: middle, principles
   
   
 ---
-class: middle, principles
+class: middle, principles, inverse
 
 &lt;h2 align="center"&gt; plotly's client-side reactivity options &lt;/h2&gt;
 
@@ -588,17 +588,20 @@ class: center, middle, inverse
 ]
 
 ---
-class: inverse, middle, center
+class: middle, center, principles
 
 # Filter vs highlight
-
-The `highlight()` function sets options for *highlight events*.
 
 *Highlight* events **dim the opacity** of existing marks.
 
 *Filter* events **completely removes** existing marks and rescales axes.
 
 At least currently, *filter* events must be fired from **crosstalk** widgets.
+
+---
+background-image: url(../gifs/filter-vs-highlight.gif)
+background-size: contain
+
 
 ---
 ## Crosstalk's filtering widgets
@@ -633,7 +636,7 @@ bscols(
 &lt;iframe src="04-filter.html" width="100%" height="420" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
-class: inverse, middle
+class: inverse, middle, principles
 background-image: url(your-turn.jpeg)
 background-size: contain
 
@@ -657,7 +660,7 @@ background-size: contain
 
 
 ---
-class: middle, principles
+class: middle, principles, inverse
 
 &lt;h2 align="center"&gt; plotly's client-side reactivity options &lt;/h2&gt;
 
@@ -693,7 +696,7 @@ plot_mapbox(storms, color = I("red")) %&gt;%
 ```
 
 ---
-class: middle, principles
+class: middle, principles, inverse
 
 &lt;h2 align="center"&gt; plotly's client-side reactivity options &lt;/h2&gt;
 
@@ -724,23 +727,163 @@ plot_ly(mtcars, x = ~wt, y = ~mpg) %&gt;%
 &lt;iframe src="google.html" width="100%" height="300" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
 
 ---
-class: middle
+class: middle, inverse, principles
 
 ## Demo
 
-Let's walk through the 'customdata.R' script:
+In the [RStudio cloud project](https://rstudio.cloud/project/14090), open the 'customdata.R' script:
 
 ```r
 file.edit("~/customdata.R")
 ```
 
---- 
+---
+class: center, middle
 
-Left to cover:
+# Hello &lt;img src="https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png" width=100 /&gt; 👋
 
-* Custom tooltips?
-* Leveraging `plotly_json()` and `schema()`
-* Modifying plotly graphs in shiny
+```r
+shiny::runApp("~/tutorials/20180711/shiny/01", display.mode = "showcase")
+```
+
+---
+class: center, middle
+
+# Accessing plotly user events
+
+```r
+shiny::runApp("~/tutorials/20180711/shiny/02", display.mode = "showcase")
+```
+
+---
+class: inverse, middle, principles
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+&lt;h2 align="center"&gt; Your turn &lt;/h2&gt;
+
+1. Modify the last app to use `plot_ly()` instead of `ggplotly()`
+
+2. Add output blocks that print out data from the following events:
+
+* `"plotly_hover"`
+* `"plotly_click"`
+* `"plotly_relayout"`
+
+.footnote[
+---
+
+Time: 5 minutes
+]
+
+
+---
+class: center, middle
+
+# Targetting events
+
+```r
+shiny::runApp("~/tutorials/20180711/shiny/03", display.mode = "showcase")
+```
+
+.footnote[
+See also &lt;https://plotly-book.cpsievert.me/linking-views-with-shiny.html#targeting-views&gt;
+]
+
+---
+class: center, middle
+
+# plotly proxies
+
+By default, **shiny updates require a full redraw**, but proxies allows us to leverage [the plotly.js API](https://plot.ly/javascript/plotlyjs-function-reference/) to modify/update graphs more efficiently
+
+```r
+shiny::runApp("~/tutorials/20180711/shiny/04", display.mode = "showcase")
+```
+
+---
+class: center, middle
+
+# Streaming data
+
+```r
+shiny::runApp("~/tutorials/20180711/shiny/05", display.mode = "showcase")
+```
+
+.footnote[
+Inspired by &lt;https://plot.ly/r/streaming/&gt;
+]
+
+---
+class: inverse, middle
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+&lt;h2 align="center"&gt; Your turn &lt;/h2&gt;
+
+Open the last example 
+
+```r
+file.edit("~/tutorials/20180711/shiny/05/app.R")
+```
+
+Modify it to do the following:
+
+1. Add `sliderInput()` for controlling the streaming interval.
+
+2. Add a widgets to:
+  * Change *only* the width of the line
+  * Change *only* the color of the line
+  * *Only* add/remove markers (e.g. points) for each data point
+
+&lt;hr&gt;
+
+Time: 10 minutes
+
+Hint: some of these shiny example apps will be helpful (e.g. `proxy_restyle_economics`) -- &lt;https://github.com/ropensci/plotly/tree/master/inst/examples/shiny&gt;
+
+---
+class: inverse, center, middle
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+
+## Your turn
+
+Remember [this](#17) "your turn"? Let's try to implement that idea!
+
+
+---
+background-image: url(plotly.svg)
+background-size: 100px
+background-position: 90% 8%
+class: center, middle
+
+# Thanks!
+
+Resources for more learning:
+
+https://plot.ly/r/ &lt;br /&gt;
+https://plotly-book.cpsievert.me &lt;br /&gt;
+https://talks.cpsievert.me &lt;br /&gt;
+https://github.com/cpsievert/apps &lt;br /&gt;
+https://github.com/cpsievert/pedestrians &lt;br /&gt;
+https://github.com/cpsievert/bcviz &lt;br /&gt;
+https://github.com/cpsievert/phd-thesis &lt;br /&gt;
+
+Find me online:
+
+Web: &lt;http://cpsievert.me/&gt; &lt;br /&gt;
+Twitter: [@cpsievert](https://twitter.com/cpsievert) &lt;br /&gt;
+GitHub: [@cpsievert](https://github.com/cpsievert) &lt;br /&gt;
+Email: &lt;cpsievert1@gmail.com&gt;
+
+
+---
+background-image: url(plotly.svg)
+background-size: contain
+
+# Ask me anything!!
     </textarea>
 <script src="../templates/remarkjs/libs/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
