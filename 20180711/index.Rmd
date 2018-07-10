@@ -56,7 +56,7 @@ class: middle, principles
   
 * CEO of [Sievert Consulting](https://consulting.cpsievert.me/) LLC (Jan 2017 - Present)
   * Services: product development, statistical modeling, and R training  
-  * Clients: plotly, Sandia Labs, NOAA, TCB Analytics
+  * Clients: plotly, Sandia Labs, NOAA, LL Bean
   
 * Expert at Library of Congress (June 2018 - Present)
   * Provide statistical expertise for DoD, BJS, and other US Federal Government projects
@@ -302,16 +302,12 @@ background-image: url(pipeline.svg)
 background-size: contain
 class: bottom, left 
 
+.pull-left[
 ```sql
-SELECT * FROM table WHERE city == "South Padre Island"
+SELECT * FROM table 
+  WHERE city == "South Padre Island"
 ```
-
----
-background-image: url(../gifs/us-arrests.gif)
-background-size: contain
-class: bottom, left
-
-### Works with list-columns & animation!
+]
 
 ---
 background-image: url(../gifs/storms.gif)
@@ -326,6 +322,13 @@ background-size: contain
 class: bottom, left
 
 ### Works with aggregates (& mapbox)!
+
+---
+background-image: url(../gifs/us-arrests.gif)
+background-size: contain
+class: bottom, left
+
+### Works with list-columns & animation!
 
 ---
 background-image: url(../gifs/dt-trails.gif)
