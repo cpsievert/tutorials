@@ -1,5 +1,5 @@
 ---
-title: "Mastering plotly for R"
+title: "Interactive dataviz on the web with R & plotly"
 author: "Carson Sievert"
 venue: "useR 2018"
 type: "tutorial"
@@ -9,7 +9,6 @@ output:
     css: ["default", "default-fonts", "main.css"]
     chakra: "../templates/remarkjs/libs/remark-latest.min.js"
     mathjax: null
-    seal: false
     nature:
       # approx the golden ratio
       ratio: '14.6:9'
@@ -18,14 +17,14 @@ output:
       countIncrementalSlides: false
       navigation:
         scroll: false
+date: "Slides: [bit.ly/useR18](https://bit.ly/useR18) <br /> <br />  `r icon::fa_twitter()` <a href='https://twitter.com/cpsievert'>@cpsievert</a> <br />
+`r icon::fa_github()` <a href='https://github.com/cpsievert'>@cpsievert</a> <br />
+`r icon::fa_envelope()` <cpsievert1@gmail.com> <br />
+`r icon::fa_globe()` <https://cpsievert.me/> <br /> <br /> Slides released under <a href='https://github.com/cpsievert/talks/blob/gh-pages/LICENSE'>Creative Commons</a>"
 ---
-class: bottom, left
-background-image: url(plotly-for-r.svg)
+class: inverse, middle, principles
+background-image: url(your-turn.jpeg)
 background-size: contain
-
-# Welcome
-
-## Thanks for coming!
 
 <style>
 .principles {
@@ -33,16 +32,11 @@ background-size: contain
 }
 </style>
 
----
-class: inverse, middle, principles
-background-image: url(your-turn.jpeg)
-background-size: contain
-
 <h2 align="center"> Your turn </h2>
 
-Open the slides <https://bit.ly/useR18>
+### Open the slides [bit.ly/useR18](https://bit.ly/useR18)
 
-Go to this address <https://rstudio.cloud/project/14090>
+### Go to this address [rstudio.cloud/project/14090](https://rstudio.cloud/project/14090)
 
 
 .footnote[
