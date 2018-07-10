@@ -47,7 +47,7 @@ Go to this address <https://rstudio.cloud/project/14090>
 
 .footnote[
 ---
-Time: 5 minutes
+Time: 2 minutes
 ]
 
 
@@ -191,14 +191,14 @@ background-image: url(server-client-dim.svg)
 background-size: contain
 class: middle, right
 
-# Client-side technologies: HTML, JavaScript, CSS
+# Easier to share, scale, and maintain
 
 ---
 background-image: url(server-client-dim.svg)
 background-size: contain
 class: middle, right
 
-# Easier to share, scale, and maintain
+# Client-side technologies: HTML, JavaScript, CSS
 
 ---
 background-image: url(server-client-dim.svg)
@@ -216,34 +216,7 @@ background-image: url(server-client-dim.svg)
 background-size: contain
 class: middle, right
 
-# What can plotly do in a standalone page?
-
----
-## An example of (standalone) linked views
-
-<iframe src="txmissing.html" width="100%" height="650" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
-
----
-background-image: url(pipeline.svg)
-background-size: contain
-class: bottom, left 
-
-## "Linking as a <br> database query"
-
----
-class: inverse, middle, principles
-background-image: url(your-turn.jpeg)
-background-size: contain
-
-<h2 align="center"> Your Turn </h2>
-
-Think of a question you'd like to ask of your data via a (linked) interactive graphic (bonus: draw it)!
-
-.footnote[
----
-
-Time: 5 minutes
-]
+# plotly can do a lot in a standalone page!
 
 ---
 class: middle, principles, inverse
@@ -273,19 +246,127 @@ class: middle, principles, inverse
 3. Custom JavaScript via `htmlwidgets::onRender()`
   * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
 
+---
+### Make ggplot2 interactive
+
+```r
+library(plotly)
+p <- ggplot(txhousing) + geom_line(aes(date, median, group = city))
+ggplotly(p)
+```
+
+<iframe src="txbasic.html" width="100%" height="650" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+---
+### Customize tooltip
+
+```r
+library(plotly)
+p <- ggplot(txhousing) + geom_line(aes(date, median, group = city, text = city))
+ggplotly(p, tooltip = "text")
+```
+
+<iframe src="txtooltip.html" width="100%" height="650" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+---
+### Highlight a key (e.g. city) column
+
+```r
+library(plotly)
+*tx <- highlight_key(txhousing, ~city)
+p <- ggplot(tx) + geom_line(aes(date, median, group = city, text = city))
+gg <- ggplotly(p, tooltip = "text")
+*highlight(gg, on = "plotly_click")
+```
+
+<iframe src="txhighlight.html" width="100%" height="650" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+---
+### Direct/indirect manipulation & persistent highlighting!
+
+```r
+gg <- ggplotly(p, tooltip = "text")
+*highlight(gg, on = "plotly_hover", selectize = TRUE, dynamic = TRUE)
+```
+
+<iframe src="txmodes.html" width="100%" height="450" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+---
+### Link aggregates to raw data
+
+<iframe src="txmissing.html" width="100%" height="650" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+---
+background-image: url(pipeline.svg)
+background-size: contain
+class: bottom, left 
+
+## "Linking as a <br> database query"
+
+---
+background-image: url(pipeline.svg)
+background-size: contain
+class: bottom, left 
+
+```sql
+SELECT * FROM table WHERE city == "South Padre Island"
+```
+
+---
+background-image: url(../gifs/us-arrests.gif)
+background-size: contain
+class: bottom, left
+
+### Works with list-columns & animation!
+
+---
+background-image: url(../gifs/storms.gif)
+background-size: contain
+class: bottom, left
+
+### Works with 3D!
+
+---
+background-image: url(../gifs/mapbox-aggregates.gif)
+background-size: contain
+class: bottom, left
+
+### Works with aggregates (& mapbox)!
+
+---
+background-image: url(../gifs/dt-trails.gif)
+background-size: contain
+class: bottom, left
+
+### Works with other htmlwidgets
+
+---
+class: inverse, middle, principles
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+<h2 align="center"> <em>Choose</em> Your Turn </h2>
+
+(A) Think of a question you'd like to ask of your data via a (linked) interactive graphic (bonus: draw it)!
+
+(B) Study [the code](https://github.com/ropensci/plotly/blob/master/demo/crosstalk-highlight-pipeline.R) for generating [this visual](#21). How does it work?
+
+.footnote[
+---
+
+Time: 5 minutes
+]
+
+
+
 
 ---
 ## Texas housing prices
 
-```{r echo = FALSE, eval = FALSE}
-data(txhousing, package = "ggplot2")
+```r
 tx <- txhousing %>%
   select(city, year, month, median) %>%
   filter(city %in% c("Galveston", "Midland", "Odessa", "South Padre Island"))
-```
-
-```r
-tx
 ```
 
 ```r
@@ -305,10 +386,10 @@ tx
 #> # ... with 738 more rows
 ```
 
-#### Can month help explain (median) price?
+#### How does price differ across cities?
 
 ---
-### Price versus month
+### Price versus month, by city & year
 
 ```r
 library(ggplot2)
@@ -342,7 +423,7 @@ p <- ggplot(TX, aes(month, median, group = year)) + geom_line() +
 ## Set selection mode and default selections
 
 ```r
-highlight(.Last.value, "plotly_hover", defaultValues = "2006")
+highlight(.Last.value, on = "plotly_hover", defaultValues = 2006)
 ```
 
 <a href="08-modes.html" target="_blank">
@@ -493,7 +574,7 @@ background-size: contain
 
 <h2 align="center"> Your Turn </h2>
 
-Use `plotly_json()` to study how the R code (on the [last slide](#33)) maps to JSON.
+Use `plotly_json()` to study how the R code (on the [last slide](#42)) maps to JSON.
 
 **NOTE**: We don't have time to cover `plot_ly()` in depth..learn more in the [plotly cookbook](https://plotly-book.cpsievert.me/the-plotly-cookbook.html) chapter of the [plotly for R book](https://plotly-book.cpsievert.me/)
 
@@ -885,7 +966,7 @@ background-size: contain
 
 ## Your turn
 
-Remember [this](#17) "your turn"? Let's try to implement it!
+Remember [this](#28) "your turn"? Let's try to implement it!
 
 
 ---
