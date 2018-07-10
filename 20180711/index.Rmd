@@ -500,12 +500,12 @@ Run the following R code to generate the soccer visualization:
 demo("crosstalk-highlight-epl-2", package = "plotly")
 ```
 
-1. Compare the performance of 'Liverpool' with 'Chelsea'. What other info can you extract from this graphic?
+1. Compare the performance of 'Liverpool' with 'Chelsea'.
 2. Run `plotly_json()`. What does this return?
 
 <hr>
 
-Time: 5 minutes
+Time: 3 minutes
 
 ---
 ## Inspect the underlying data
