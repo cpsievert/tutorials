@@ -1,0 +1,771 @@
+---
+title: "Interactive dataviz on the web with R, plotly, and shiny"
+author: "Carson Sievert"
+venue: "R/Pharma 2019"
+type: "workshop"
+recording: "NA"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "main.css"]
+    chakra: "libs/remark-latest.min.js"
+    mathjax: null
+    nature:
+      # approx the golden ratio
+      ratio: '14.6:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      navigation:
+        scroll: false
+---
+class: inverse, middle
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+<style>
+.principles {
+  font-size: 150%;
+}
+</style>
+
+<h2 align="center"> Your turn </h2>
+
+(1) Go to this address <https://rstudio.cloud/project/14090>. Follow the directions you see in the 'hello.R' script.
+
+(2) Share (w/ your neighbor) 3 things you're hoping to take away from this workshop
+
+.footnote[
+---
+Time: 5 minutes
+]
+
+```{r, include = FALSE}
+library(plotly)
+knitr::opts_chunk$set(
+  eval = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  comment = "#>",
+  collapse = TRUE,
+  fig.width = 12,
+  fig.height = 6
+)
+```
+
+---
+## A minimal bar chart
+
+* Every **plotly** chart is powered by [plotly.js](https://github.com/plotly/plotly.js), *plus some extra R/JS magic* `r emo::ji("tophat")` `r emo::ji("rabbit")`.
+* `plot_ly()` is designed to give more "R-like" defaults
+
+```{r}
+library(plotly)
+plot_ly(x = c("A", "B"), y = 1:2)
+```
+
+<iframe src="01-simple-bar.html" width="100%" height="300" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+What actually happens when a plotly object is printed and rendered locally?
+
+---
+class: inverse
+background-image: url(printing.svg)
+background-size: contain
+
+---
+
+## A plotly.js bar chart
+
+.pull-left[
+```js
+var trace1 = {
+  x: ['giraffes', 'orangutans', 'monkeys'],
+  y: [20, 14, 23],
+  name: 'SF Zoo',
+  type: 'bar'
+};
+
+var trace2 = {
+  x: ['giraffes', 'orangutans', 'monkeys'],
+  y: [12, 18, 29],
+  name: 'LA Zoo',
+  type: 'bar'
+};
+
+var data = [trace1, trace2];
+
+Plotly.newPlot('myDiv', data);
+```
+]
+
+.pull-right[
+<img src="zoo-bars.png" width="100%"/>
+]
+
+---
+## Now, with `plot_ly()`
+
+.pull-left[
+```r
+plot_ly() %>%
+  add_trace(
+    x = c('giraffes', 'orangutans', 'monkeys'),
+    y = c(20, 14, 23),
+    name = 'SF Zoo',
+    type = 'bar'
+  ) %>%
+  add_trace(
+    x = c('giraffes', 'orangutans', 'monkeys'),
+    y = c(12, 18, 29),
+    name = 'LA Zoo',
+    type = 'bar'
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars.png" width="100%"/>
+]
+
+**Important**: You can *always* work at the plotly.js level with `plot_ly()` (as done here), but you don't have to!
+
+---
+## `plot_ly()` makes it easier to work with data
+
+.pull-left[
+```r
+zoo_dat <- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+plot_ly(zoo_dat) %>%
+  add_bars(
+    x = ~animal,
+    y = ~count,
+    name = ~zoo
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars.png" width="100%"/>
+]
+
+---
+## `plot_ly()` makes it easier to work with data
+
+.pull-left[
+```r
+zoo_dat <- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+plot_ly(zoo_dat) %>%
+  add_bars(
+*   x = ~animal,
+*   y = ~count,
+*   name = ~zoo
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars.png" width="100%"/>
+]
+
+If you want to reference a data column, you must use `~`
+
+---
+## `plot_ly()` makes it easier to work with data
+
+.pull-left[
+```r
+zoo_dat <- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+plot_ly(zoo_dat) %>%
+  add_bars(
+    x = ~animal,
+    y = ~count,
+*   name = ~zoo
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars.png" width="100%"/>
+]
+
+For some attributes like `name`, `color`, etc, `plot_ly()` will generate one trace per level for you (if makes sense to).
+
+---
+## `plot_ly()` makes it easier to map data to visuals
+
+.pull-left[
+```r
+zoo_dat <- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+plot_ly(zoo_dat) %>%
+  add_bars(
+    x = ~animal,
+    y = ~count,
+*   color = ~zoo
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars-color.png" width="100%"/>
+]
+
+Mapping data to `color` will impose it's own color scheme
+
+---
+## `plot_ly()` makes it easier to map data to visuals
+
+.pull-left[
+```r
+zoo_dat <- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+plot_ly(zoo_dat) %>%
+  add_bars(
+    x = ~animal,
+    y = ~count,
+*   color = ~zoo,
+*   colors = "Accent"
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars-color-accent.png" width="100%"/>
+]
+
+Specify the range via `colors` (here a [colorbrewer](http://colorbrewer2.org) palette name, see `RColorBrewer::brewer.pal.info` for options)
+
+---
+## `plot_ly()` makes it easier to map data to visuals
+
+.pull-left[
+```r
+zoo_dat <- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+plot_ly(zoo_dat) %>%
+  add_bars(
+    x = ~animal,
+    y = ~count,
+*   color = ~zoo,
+*   colors = c(
+*     "SF Zoo" = "black", 
+*     "LA Zoo" = "red"
+*   )
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars-color-manual.png" width="100%"/>
+]
+
+Provide your own palette if you want. See `?plot_ly` for more details.
+
+---
+## `plot_ly()` makes it easier to work with data
+
+.pull-left[
+```r
+zoo_dat <- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+plot_ly(zoo_dat) %>%
+  add_bars(
+    x = ~animal,
+    y = ~count,
+    split = ~zoo,
+*   stroke = ~zoo,
+*   strokes = c(
+*     "SF Zoo" = "black", 
+*     "LA Zoo" = "red"
+*   )
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars-stroke.png" width="100%"/>
+]
+
+* `color`/`colors` for fill-color
+* `stroke`/`strokes` for outline-color
+
+---
+class: inverse, middle
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+## Your turn
+
+.pull-left[
+```r
+zoo_dat <- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+plot_ly(zoo_dat) %>%
+  add_bars(
+    x = ~animal,
+    y = ~count,
+    color = ~zoo,
+    stroke = "black",
+    span = I(5)
+  )
+```
+]
+
+.pull-right[
+<img src="zoo-bars-stroke-broken.png" width="100%"/>
+]
+
+1. What does the `span` argument control? 
+2. Can you make the `span` be a function of `count`?
+3. Why isn't the `stroke` on this plot black?
+
+---
+## Use `plotly_json()` to see the underlying JSON
+
+.pull-left[
+```r
+plot_ly(diamonds, y = ~cut, color = ~clarity, stroke = I("black"))
+```
+
+<iframe src="diamonds.html" width="150%" height="500" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+]
+
+.pull-right[
+```r
+# If no plot is provided, it shows JSON of the previously printed plot
+plotly_json()
+```
+
+<iframe src="diamonds-json.html" width="100%" height="400" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+]
+
+---
+## Use `schema()` to see what's available
+
+```r
+schema()
+```
+
+<iframe src="schema.html" width="120%" height="450" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+
+---
+### `schema()` is especially useful for `layout()`/`config()`
+
+
+.pull-left[
+```r
+plot_ly() %>%
+  layout(
+    xaxis = list(range = c(-5, 5)),
+    yaxis = list(range = c(-5, 5)),
+    # shapes types: rect, circle, line
+    shapes = list(
+      type = "rect",
+      x0 = 0, x1 = 1, 
+      y0 = 0, y1 = -1,
+      fillcolor = "blue"
+    ),
+    annotations = list(
+      text = "Drag the rect",
+      x = 0.5, xref = "paper",
+      y = 0.5, yref = "paper"
+    )
+  ) %>%
+  config(
+    editable = TRUE,
+    displayModeBar = FALSE
+  )
+```
+]
+
+.pull-right[
+<iframe src="editable.html" width="110%" height="550" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"> </iframe>
+]
+
+---
+## Examples of editable charts
+
+<div align="center">
+<iframe src="https://player.vimeo.com/video/309371928?title=0&byline=0&portrait=0" width="640" height="446" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+</div>
+
+---
+## Examples of editable charts
+
+<div align="center">
+<iframe src="https://player.vimeo.com/video/318338029?title=0&byline=0&portrait=0" width="640" height="446" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+</div>
+
+---
+background-image: url(https://talks.cpsievert.me/20180515/server-client.svg)
+background-size: contain
+class: middle, right
+
+# When is a web application necessary?
+
+---
+background-image: url(https://talks.cpsievert.me/20180515/server-client-dim.svg)
+background-size: contain
+class: middle, right
+
+# Easier to share, scale, and maintain
+
+---
+background-image: url(https://talks.cpsievert.me/20180515/server-client-dim.svg)
+background-size: contain
+class: middle, right
+
+# What can plotly do in a standalone page?
+
+---
+## Quite a bit out-of-the-box!
+
+<div align="center">
+<iframe src="https://player.vimeo.com/video/315707813?title=0&byline=0&portrait=0" width="640" height="446" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+</div>
+
+More sophisticated or custom behavior takes a bit of work
+
+---
+class: principles, inverse
+
+<h2 align="center"> plotly's <i>client-side</i> reactivity options </h2>
+
+1. Graphical (database) queries
+  * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
+  
+2. Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+
+3. Custom JavaScript via `htmlwidgets::onRender()`
+  * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
+  
+---
+class: principles, inverse
+
+<h2 align="center"> plotly's <i>client-side</i> reactivity options </h2>
+
+1. Graphical (database) queries
+    * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
+  
+.footnote[
+I basically covered this last year, see here if this interests you https://plotly-book.cpsievert.me/linking-views-without-shiny.html
+]
+
+---
+class: principles, inverse
+
+<h2 align="center"> plotly's <i>client-side</i> reactivity options </h2>
+
+1. Graphical (database) queries
+  * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
+  
+2. Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+
+
+  
+.footnote[
+Can be useful, but already well-documented and not great workshop material
+]
+
+---
+class: principles, inverse
+
+<h2 align="center"> plotly's <i>client-side</i> reactivity options </h2>
+
+1. Graphical (database) queries
+  * In _plotly for R_, I call this [linking views without shiny](https://plotly-book.cpsievert.me/linking-views-without-shiny.html).
+  
+2. Respond to plotly [sliders](https://plot.ly/r/sliders/), [buttons](https://plot.ly/r/custom-buttons/), and [dropdowns](https://plot.ly/r/dropdowns/) via [plotly.js functions](https://plot.ly/javascript/plotlyjs-function-reference/)
+  
+3. Custom JavaScript via `htmlwidgets::onRender()`
+  * Respond to [plotly.js events](https://plot.ly/javascript/plotlyjs-events/) in a custom way
+  
+.footnote[
+New book chapter on this!  https://plotly-r.com/javascript.html
+]
+
+
+---
+class: inverse, middle, principles
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+<h2 align="center"> Your Turn </h2>
+
+Think of a question you'd like to answer using familiar data. Think of an interactive graphic that could help address the question (bonus: draw it)!
+
+.footnote[
+---
+
+Time: 5 minutes
+]
+
+---
+
+### openFDA drug reaction outcomes
+
+```r
+library(openfda) # remotes::install_github("ropenhealth/openfda")
+library(dplyr)
+drug_outcomes <- function(name) {
+  fda_query("/drug/event.json") %>%
+    fda_filter("patient.drug.openfda.generic_name", name) %>%
+    fda_count("patient.reaction.reactionoutcome") %>%
+    fda_exec() %>%
+    mutate(reaction = recode(term,
+        `1` = "Recovered/resolved",
+        `2` = "Recovering/resolving",
+        `3` = "Not recovered/not resolved",
+        `4` = "Recovered/resolved with sequelae",
+        `5` = "Fatal", `6` = "Unknown")) 
+}
+drug_outcomes("fentanyl")
+#>   term count                         reaction
+#> 1    5 31515                            Fatal
+#> 2    6 30624                          Unknown
+#> 3    1 14641               Recovered/resolved
+#> 4    3 13691       Not recovered/not resolved
+#> 5    2  4248             Recovering/resolving
+#> 6    4   406 Recovered/resolved with sequelae
+```
+
+---
+
+### Visualizing outcomes for a few drugs
+
+.pull-left[
+```r
+drugs <- c(
+  "fentanyl", 
+  "oxycodone", 
+  "morphine"
+)
+
+lapply(drugs, drug_outcomes) %>%
+  setNames(drugs) %>%
+  bind_rows(.id = "drug") %>%
+  plot_ly(
+    y = ~reaction, 
+    x = ~count, 
+    color = ~drug
+  ) %>%
+  add_bars()
+```
+]
+
+.pull-right[
+<img src="drug-bars.png" />
+]
+
+---
+## Same data, different look
+
+.pull-left[
+<img src="drug-bars.png" />
+]
+.pull-right[
+<img src="drug-heat.png" />
+]
+
+---
+### Heatmap of 1000 drug outcomes (made with heatmaply and plotly)
+
+<div align="center">
+<iframe src="https://player.vimeo.com/video/285132666?title=0&byline=0&portrait=0" width="640" height="446" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+</div>
+
+---
+### Finding 'unusual' patterns and sense-making
+
+<div align="center">
+<iframe src="https://player.vimeo.com/video/285119443?title=0&byline=0&portrait=0" width="640" height="446" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+</div>
+
+
+---
+class: center, middle
+
+# Overview first, then zoom and filter, then details on demand 
+
+Ben Shneiderman
+
+.footnote[
+Popular information visualization perspective
+]
+
+---
+
+## Hello shiny
+
+**shiny** provides an elegant framework for coordinating multiple views
+
+```r
+file.edit("~/tutorials/20190821/shiny/01/app.R")
+shiny::runApp("~/tutorials/20190821/shiny/01")
+```
+
+
+---
+class: center, middle
+
+# Accessing plotly user events
+
+```r
+shiny::runApp("~/tutorials/20190821/shiny/01", display.mode = "showcase")
+```
+
+---
+class: inverse, middle
+background-image: url(../your-turn.jpeg)
+background-size: contain
+
+<h2 align="center"> Your turn </h2>
+
+1. Modify the last app to use `plot_ly()` instead of `ggplotly()`
+
+2. Add output blocks that print out data from the following events:
+
+* `"plotly_hover"`
+* `"plotly_click"`
+* `"plotly_relayout"`
+
+.footnote[
+---
+
+Time: 5 minutes
+]
+
+
+---
+class: center, middle
+
+# Targetting events
+
+```r
+shiny::runApp("~/tutorials/20190821/shiny/03", display.mode = "showcase")
+```
+
+.footnote[
+See also <https://plotly-book.cpsievert.me/linking-views-with-shiny.html#targeting-views>
+]
+
+---
+class: center, middle
+
+# plotly proxies
+
+By default, **shiny updates require a full redraw**, but proxies allows us to leverage [the plotly.js API](https://plot.ly/javascript/plotlyjs-function-reference/) to modify/update graphs more efficiently
+
+```r
+shiny::runApp("~/tutorials/20190821/shiny/04", display.mode = "showcase")
+```
+
+---
+class: center, middle
+
+# Streaming data
+
+```r
+shiny::runApp("~/tutorials/20190821/shiny/05", display.mode = "showcase")
+```
+
+.footnote[
+Inspired by <https://plot.ly/r/streaming/>
+]
+
+---
+class: inverse, middle
+background-image: url(../your-turn.jpeg)
+background-size: contain
+
+<h2 align="center"> Your turn </h2>
+
+Open the last example 
+
+```r
+file.edit("~/workshops/20180609/day2/shiny/05/app.R")
+```
+
+Modify it to do the following:
+
+1. Add `sliderInput()` for controlling the streaming interval.
+
+2. Add a widgets to:
+  * Change *only* the width of the line
+  * Change *only* the color of the line
+  * *Only* add/remove markers (e.g. points) for each data point
+
+<hr>
+
+Time: 10 minutes
+
+Hint: some of these shiny example apps will be helpful (e.g. `proxy_restyle_economics`) -- <https://github.com/ropensci/plotly/tree/master/inst/examples/shiny>
+
+---
+class: inverse, center, middle
+background-image: url(your-turn.jpeg)
+background-size: contain
+
+
+## Your turn
+
+Remember [this](#28) "your turn"? Let's try to make that idea a reality!
+
+---
+background-image: url(plotly.svg)
+background-size: 100px
+background-position: 90% 8%
+class: center, middle
+
+# Thanks!
+
+Resources for more learning:
+
+https://plotly-r.com <br />
+https://plot.ly/r <br />
+https://talks.cpsievert.me <br />
+https://vimeo.com/cpsievert
+
+Find me online:
+
+Web: <http://cpsievert.me/> <br />
+Twitter: [@cpsievert](https://twitter.com/cpsievert) <br />
+GitHub: [@cpsievert](https://github.com/cpsievert) <br />
+Email: <cpsievert1@gmail.com>
+
+
+---
+class: middle, center
+
+# Ask me anything!!
+
+
+
+
