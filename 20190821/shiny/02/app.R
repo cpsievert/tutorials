@@ -3,17 +3,15 @@ library(plotly)
 library(dplyr)
 
 # a tidy dataset of reactions outcomes for 1000 most common drugs
-outcomes <- readRDS(here::here("data", "outcomes-tidy.rds"))
-
+outcomes <- readRDS("data/outcomes-tidy.rds")
 # Top 6 Principal Component scores for each drug
-outcome_pca <- readRDS(here::here("data", "pca-scores.rds"))
+outcome_pca <- readRDS("data/pca-scores.rds")
 
 ui <- fluidPage(
-  p(
-    "Clicking on the points below prints", tags$i("accumulated"), 
-    "click info. Note how double-clicking clears the history of selected drugs and repeatedly clicking a point adds/removes it from consideration."
-  ), 
-  p(tags$b("Your turn:"), "Provide a visual cue of which drugs are selected on the scatterplot."),
+  p("Clicking on the points below prints info about the particular point."), 
+  p(tags$b("Your turn:")),
+  p("1. Modify the click output to display all the ", tags$code("outcomes"), " data for the clicked drug."),
+  p("2. Modify the click output again, this time to display bar chart of ", tags$code("reaction"), " counts for the clicked drug."),
   plotlyOutput("p"),
   verbatimTextOutput("click")
 )
@@ -29,36 +27,10 @@ server <- function(input, output, session) {
       add_markers()
   })
   
-  # Reactive value for managing a 
-  # set of 'selected drugs'
-  selected_drugs <- reactiveVal()
-  
-  # Update selected drugs on click event
-  observeEvent(event_data("plotly_click"), {
-    click <- event_data("plotly_click")$customdata
-    drugs <- selected_drugs()
-    
-    # If the clicked drug is already selected,
-    # then remove it from selection set; otherwise,
-    # we add it to the selection set
-    drugs <- if (click %in% drugs) {
-      setdiff(drugs, click)
-    } else {
-      c(click, drugs)
-    }
-    
-    selected_drugs(drugs)
-  })
-  
-  # clear selected drugs on double-click
-  observeEvent(event_data("plotly_doubleclick"), {
-    selected_drugs(NULL)
-  })
-  
-  # display the selected drugs
   output$click <- renderPrint({
-    selected_drugs()
+    event_data("plotly_click")
   })
+  
 }
 
 shinyApp(ui, server)

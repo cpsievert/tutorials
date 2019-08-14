@@ -1,12 +1,14 @@
 library(shiny)
+library(plotly)
 
 # a tidy dataset of reactions outcomes for 1000 most common drugs
-outcomes <- readRDS(here::here("data", "outcomes-tidy.rds"))
+outcomes <- readRDS("data/outcomes-tidy.rds")
 
 ui <- fluidPage(
   selectInput(
     "drug", "Select drug(s)", 
     choices = unique(outcomes$drug), 
+    selected = "oxycodone",
     multiple = TRUE
   ),
   plotlyOutput("p")
