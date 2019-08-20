@@ -34,16 +34,19 @@ class: inverse, principles
 
 &lt;h2 align="center"&gt; Your turn &lt;/h2&gt;
 
-(1) Go to this address &lt;https://rstudio.cloud/project/446255&gt;. This hosted RStudio instance contains materials for today's workshop.
+(1) Open the slides **in Firefox**:  [bit.ly/R_Pharma](https://bit.ly/R_Pharma)
+
+&lt;br/&gt;
+
+(2) Go to this address &lt;https://rstudio.cloud/project/446255&gt;. This hosted RStudio instance contains materials for today's workshop.
   * Login or sign up to RStudio Cloud (it's free)
   * Click "Save a Permanent Copy" to copy the project to your account.
 
 &lt;br/&gt;
-&lt;br/&gt;
 
-(2) Ask me any question at any time by going to [slido.com](https://www.sli.do) and enter event code #8464 (or use [this link](https://app.sli.do/event/7ev3yywn)). I'll try to check these questions periodically (upvote questions if you'd like them answered!)
+(3) Ask me any question at any time by going to [slido.com](https://www.sli.do) and enter event code #8464 (or use [this link](https://app.sli.do/event/7ev3yywn)). I'll try to check these questions periodically (upvote questions if you'd like them answered!)
 
-<div class="countdown" id="timer_5d548892" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_5d5c13fc" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -56,7 +59,7 @@ class: inverse, principles
 
 ```r
 library(plotly)
-plot_ly(x = c("A", "B"), y = 1:2)
+plot_ly(x = c("A", "B"), y = c(1, 2))
 ```
 
 &lt;div align="center"&gt;
@@ -71,10 +74,9 @@ background-image: url(printing.svg)
 background-size: contain
 
 ---
+## Plotly figures are JSON
 
-## A plotly.js bar chart
-
-Every plotly.js figure follows a JSON specification. Most importantly, every figure is made up of one or more traces (a trace is a mapping from data to visual).
+A Plotly *figure* is made up of trace(s) and a layout. A *trace* is a mapping from data to visual.
 
 .pull-left[
 ```js
@@ -105,7 +107,7 @@ Plotly.newPlot('myDiv', data);
 ---
 ## Now in R, with `plot_ly()`
 
-**Important**: You can *always* work at the plotly.js level with `plot_ly()` (as done here), but you don't have to!
+In R, use `plot_ly()` (or `ggplotly()`) to create a **plotly** object, then `add_trace()` to add any trace you want.
 
 .pull-left[
 ```r
@@ -130,9 +132,9 @@ plot_ly() %&gt;%
 ]
 
 ---
-## `plot_ly()` makes it easier to work with data
+## `plot_ly()` syntax
 
-Let's pull the relevant data into a `tibble()` and map columns to the appropriate plotly.js attributes (e.g., `x`, `y`, `name`).
+Use `~` to reference a data column
 
 .pull-left[
 ```r
@@ -157,7 +159,179 @@ zoo_dat
 .pull-right[
 ```r
 plot_ly(zoo_dat) %&gt;%
-  add_bars(
+  add_trace(
+*   x = ~animal,
+*   y = ~count,
+*   name = ~zoo,
+    type = "bar"
+  )
+```
+
+&lt;img src="zoo-bars.png" width="100%"/&gt;
+]
+
+---
+## `plot_ly()` syntax
+
+For attributes that require a scalar value (e.g. `name`), `plot_ly()` generates one trace per level.
+
+.pull-left[
+```r
+zoo_dat &lt;- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+zoo_dat
+#&gt; # A tibble: 6 x 3
+#&gt;   animal     count zoo   
+#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
+#&gt; 1 giraffes      20 SF Zoo
+#&gt; 2 orangutans    14 SF Zoo
+#&gt; 3 monkeys       23 SF Zoo
+#&gt; 4 giraffes      12 LA Zoo
+#&gt; 5 orangutans    18 LA Zoo
+#&gt; 6 monkeys       29 LA Zoo
+```
+]
+
+.pull-right[
+```r
+plot_ly(zoo_dat) %&gt;%
+  add_trace(
+    x = ~animal,
+    y = ~count,
+*   name = ~zoo,
+    type = "bar"
+  )
+```
+
+&lt;img src="zoo-bars.png" width="100%"/&gt;
+]
+
+---
+## `plot_ly()` syntax
+
+The `split` argument is a more explicit way to split data into multiple traces
+
+.pull-left[
+```r
+zoo_dat &lt;- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+zoo_dat
+#&gt; # A tibble: 6 x 3
+#&gt;   animal     count zoo   
+#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
+#&gt; 1 giraffes      20 SF Zoo
+#&gt; 2 orangutans    14 SF Zoo
+#&gt; 3 monkeys       23 SF Zoo
+#&gt; 4 giraffes      12 LA Zoo
+#&gt; 5 orangutans    18 LA Zoo
+#&gt; 6 monkeys       29 LA Zoo
+```
+]
+
+.pull-right[
+```r
+plot_ly(zoo_dat) %&gt;%
+  add_trace(
+    x = ~animal,
+    y = ~count,
+*   split = ~zoo,
+    type = "bar"
+  )
+```
+
+&lt;img src="zoo-bars.png" width="100%"/&gt;
+]
+
+
+---
+## `plotly_json()` to view underlying JSON
+
+.pull-left[
+```r
+zoo_dat &lt;- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+zoo_dat
+#&gt; # A tibble: 6 x 3
+#&gt;   animal     count zoo   
+#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
+#&gt; 1 giraffes      20 SF Zoo
+#&gt; 2 orangutans    14 SF Zoo
+#&gt; 3 monkeys       23 SF Zoo
+#&gt; 4 giraffes      12 LA Zoo
+#&gt; 5 orangutans    18 LA Zoo
+#&gt; 6 monkeys       29 LA Zoo
+```
+]
+
+.pull-right[
+```r
+plot_ly(zoo_dat) %&gt;%
+  add_trace(
+    x = ~animal,
+    y = ~count,
+    name = ~zoo,
+    type = "bar"
+  ) %&gt;%
+*  # Verify we get one trace per zoo  
+*  plotly_json(FALSE)
+```
+
+```json
+"data": [
+  {
+    "x": ["giraffes", "orangutans", "monkeys"],
+    "y": [12, 18, 29],
+    "name": "LA Zoo",
+    "type": "bar"
+  }, {
+    "x": ["giraffes", "orangutans", "monkeys"],
+    "y": [20, 14, 23],
+    "name": "SF Zoo",
+    "type": "bar"
+  }
+]
+```
+]
+
+
+---
+## `plot_ly()` syntax
+
+More common trace types have a dedicated "layer" function (e.g., `add_bars()`).
+
+.pull-left[
+```r
+zoo_dat &lt;- tibble::tibble(
+  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
+  count = c(20, 14, 23, 12, 18, 29),
+  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
+)
+zoo_dat
+#&gt; # A tibble: 6 x 3
+#&gt;   animal     count zoo   
+#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
+#&gt; 1 giraffes      20 SF Zoo
+#&gt; 2 orangutans    14 SF Zoo
+#&gt; 3 monkeys       23 SF Zoo
+#&gt; 4 giraffes      12 LA Zoo
+#&gt; 5 orangutans    18 LA Zoo
+#&gt; 6 monkeys       29 LA Zoo
+```
+]
+
+.pull-right[
+```r
+plot_ly(zoo_dat) %&gt;%
+* add_bars(
     x = ~animal,
     y = ~count,
     name = ~zoo
@@ -168,48 +342,9 @@ plot_ly(zoo_dat) %&gt;%
 ]
 
 ---
-## `plot_ly()` makes it easier to work with data
+## `plot_ly()` syntax
 
-If you want to reference a data column, you must use `~`
-
-.pull-left[
-```r
-zoo_dat &lt;- tibble::tibble(
-  animal = rep(c('giraffes', 'orangutans', 'monkeys'), 2),
-  count = c(20, 14, 23, 12, 18, 29),
-  zoo = rep(c('SF Zoo', 'LA Zoo'), each = 3)
-)
-zoo_dat
-#&gt; # A tibble: 6 x 3
-#&gt;   animal     count zoo   
-#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; 
-#&gt; 1 giraffes      20 SF Zoo
-#&gt; 2 orangutans    14 SF Zoo
-#&gt; 3 monkeys       23 SF Zoo
-#&gt; 4 giraffes      12 LA Zoo
-#&gt; 5 orangutans    18 LA Zoo
-#&gt; 6 monkeys       29 LA Zoo
-```
-]
-
-.pull-right[
-```r
-plot_ly(zoo_dat) %&gt;%
-  add_bars(
-*   x = ~animal,
-*   y = ~count,
-*   name = ~zoo
-  )
-```
-
-&lt;img src="zoo-bars.png" width="100%"/&gt;
-]
-
-
----
-## `plot_ly()` makes it easier to work with data
-
-For some attributes like `name`, `color`, etc, `plot_ly()` will generate one trace per level for you (if makes sense to).
+Discrete axis ordering: use factor levels (character strings appear alphabetically)
 
 .pull-left[
 ```r
@@ -235,19 +370,18 @@ zoo_dat
 ```r
 plot_ly(zoo_dat) %&gt;%
   add_bars(
-    x = ~animal,
+*   x = ~factor(animal, c("monkeys", "giraffes", "orangutans")),
     y = ~count,
-*   name = ~zoo
+    name = ~zoo
   )
 ```
 
-&lt;img src="zoo-bars.png" width="100%"/&gt;
+&lt;img src="zoo-bars-factor.png" width="100%"/&gt;
 ]
 
 
-
 ---
-## `plot_ly()` makes it easier to map data to visuals
+## `plot_ly()` color mapping
 
 Mapping data to `color` will impose it's own color scheme
 
@@ -286,7 +420,7 @@ plot_ly(zoo_dat) %&gt;%
 
 
 ---
-## `plot_ly()` makes it easier to map data to visuals
+## `plot_ly()` color mapping
 
 Specify the range via `colors` (here a [colorbrewer](http://colorbrewer2.org) palette name, see `RColorBrewer::brewer.pal.info` for options)
 
@@ -326,7 +460,7 @@ plot_ly(zoo_dat) %&gt;%
 
 
 ---
-## `plot_ly()` makes it easier to map data to visuals
+## `plot_ly()` color mapping
 
 Provide your own palette if you want. See `?plot_ly` for more details.
 
@@ -367,7 +501,7 @@ plot_ly(zoo_dat) %&gt;%
 ]
 
 ---
-## `plot_ly()` makes it easier to work with data
+## `plot_ly()` syntax
 
 Use `color`/`colors` for fill-color and `stroke`/`strokes` for outline-color
 
@@ -456,12 +590,42 @@ plot_ly(zoo_dat) %&gt;%
 2. Can you make the `span` be a function of `count`?
 3. Why isn't the `stroke` on this plot black?
 
-<div class="countdown" id="timer_5d54855e" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_5d5c15af" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
 ---
-## Use `plotly_json()` to see the underlying JSON
+## Getting help
+
+.pull-left[
+#### Documentation
+
+* How-to guide: [plot.ly/r](https://plot.ly/r)
+* R user guide: [plotly-r.com](https://plotly-r.com)
+* R documentation: [rdocumentation.org](https://rdocumentation.org)
+]
+
+.pull-right[
+#### Q&amp;A
+
+* Plotly+Shiny+R related questions: [community.rstudio.com](https://community.rstudio.com)
+* Plotly.js specific questions: [community.plot.ly](https://community.plot.ly)
+* Another option: [stackoverflow.com](https://stackoverflow.com)
+]
+
+#### Debugging, in general
+
+* Use `plotly_json()` to inspect the underlying JSON
+  * Especially useful for debugging things that _map to_ plotly.js (e.g., `color`, `stroke`, `ggplotly()`).
+  
+* `plotly_json()` should align with the figure reference https://plot.ly/javascript/reference
+
+* The online figure reference doesn't always reflect the version of plotly.js used in the R package, but `schema()` does!
+
+
+
+---
+## `plotly_json()`: focus on `data` and `layout`
 
 ```r
 # If no plot is provided, it shows JSON of the previously printed plot
@@ -564,25 +728,19 @@ Too much to list, but here's a start!
 
 &lt;hr/&gt;
 
-The remainder of the workshop is about [linking views *server-side* with Shiny](https://plotly-r.com/linking-views-with-shiny.html)...let's talk about the difference
+### The remainder of the workshop fits under [linking views *server-side* with Shiny](https://plotly-r.com/linking-views-with-shiny.html)
 
 ---
-background-image: url(server-client-dim.svg)
+background-image: url(openfda-logo.png)
 background-size: contain
-class: middle, right
+class: bottom
 
-# Easy to share, scale, and maintain
+## Case study: drug reaction outcomes
 
----
-background-image: url(server-client.svg)
-background-size: contain
-class: middle, right
-
-# But, way more powerful and productive! 
 
 ---
 
-### openFDA drug reaction outcomes
+`drug_outcomes()` acquires reaction outcomes for a given drug name
 
 ```r
 library(openfda) # remotes::install_github("ropenhealth/openfda")
@@ -667,7 +825,7 @@ class: center, middle, inverse
 Ben Shneiderman
 
 .footnote[
-Useful pattern to follow for any high-dimensional datavis problem
+Sound advice for any high-dimensional datavis problem
 ]
 
 ---
@@ -716,7 +874,7 @@ background-image: url(your-turn.jpeg)
 background-size: contain
 class: inverse
 
-# Responding to click events
+&lt;h2 align="center"&gt; Your Turn: Responding to click events &lt;/h2&gt;
 
 The following Shiny app shows how to access click events tied to the scatterplot. 
 
@@ -727,7 +885,7 @@ shiny::runApp("shiny/02")
 
 Follow the "Your Turn" directions to extend the functionality of this app (to see the "solution", run `shiny::runApp("shiny/02-solution")`)
 
-<div class="countdown" id="timer_5d5486dd" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_5d5c1661" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -752,7 +910,7 @@ background-image: url(your-turn.jpeg)
 background-size: contain
 class: inverse
 
-# Managing event data
+&lt;h2 align="center"&gt; Your Turn: Managing event data &lt;/h2&gt;
 
 The following Shiny app shows how to accumulate (i.e., track the history) of click events
 
@@ -763,7 +921,7 @@ shiny::runApp("shiny/04")
 
 Follow the "Your Turn" directions to extend the functionality of this app. There are many ways to go about this, so there are two "solutions".
 
-<div class="countdown" id="timer_5d5484c5" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_5d5c164e" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -772,7 +930,7 @@ background-image: url(your-turn.jpeg)
 background-size: contain
 class: inverse
 
-# Routing event data
+&lt;h2 align="center"&gt; Your Turn: Routing event data &lt;/h2&gt;
 
 The following Shiny app shows how to color points on click. 
 
@@ -784,7 +942,7 @@ shiny::runApp("shiny/05")
 Follow the "Your Turn" directions to extend the functionality of this app (to see the "solution", run `shiny::runApp("shiny/05-solution")`)
 
 
-<div class="countdown" id="timer_5d5488a5" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_5d5c15c2" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -793,14 +951,14 @@ background-image: url(your-turn.jpeg)
 background-size: contain
 class: inverse
 
-# Scoping event listeners
+&lt;h2 align="center"&gt; Your Turn: Scoping event listeners &lt;/h2&gt;
 
 Click on the bar chart of the previous app. 
 
 1. Why does this generate an error? 
 2. Can you prevent the error from happening (Hint: see arguments section of `?event_data`)?
 
-<div class="countdown" id="timer_5d548877" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_5d5c16ad" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -865,7 +1023,7 @@ background-image: url(your-turn.jpeg)
 background-size: contain
 class: inverse
 
-# Restyling markers
+&lt;h2 align="center"&gt; Your Turn: Restyling markers &lt;/h2&gt;
 
 The following Shiny app uses `plotlyProxy()` to avoid a full redraw of the scatterplot when a point is clicked.
 
@@ -876,7 +1034,7 @@ shiny::runApp("shiny/06")
 
 __Your Turn:__ find the code that updates the clicked point, how does it work?
 
-<div class="countdown" id="timer_5d54889b" style="right:0;bottom:0;" data-warnwhen="0">
+<div class="countdown" id="timer_5d5c168d" style="right:0;bottom:0;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -1017,11 +1175,8 @@ sales %&gt;%
 ]
 
 ---
-background-image: url(your-turn.jpeg)
-background-size: contain
-class: inverse
 
-## Your Turn
+## Drill-down demo
 
 The following Shiny app implements a drill-down for sales category/sub-category
 
@@ -1031,11 +1186,27 @@ file.edit("shiny/07/app.R")
 shiny::runApp("shiny/07")
 ```
 
-Add a title to the sub-category pie chart showing what category is currently selected.
+Let's add a title to the sub-category pie chart showing what category is currently selected.
 
-<div class="countdown" id="timer_5d5486e9" style="right:0;bottom:0;" data-warnwhen="0">
-<code class="countdown-time"><span class="countdown-digits minutes">02</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+---
+background-image: url(your-turn.jpeg)
+background-size: contain
+class: inverse
+
+## Your turn
+
+* Watch the other 3 videos of drill-down visualizations of this same `sales` dataset listed here
+
+https://plotly-r.com/linking-views-with-shiny.html#drill-down
+
+* How many reactive values are needed in each example?
+
+(Hint: remember that one `reactiveVal()` was used to remember which category was clicked in the pie drill-down)
+
+<div class="countdown" id="timer_5d5c142d" style="right:0;bottom:0;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
+
 
 ---
 
@@ -1163,13 +1334,15 @@ background-image: url(your-turn.jpeg)
 background-size: contain
 class: inverse, principles
 
-## (Final) your turn
+&lt;h2 align="center"&gt; Your Turn: (Final) your turn &lt;/h2&gt;
 
 Choose one of the following:
 
 1. Ask me a question ([through sli.do](https://www.sli.do))
 
 2. Apply something you learned to a dataset of your choice.
+
+3. Run a `plotly_example()` from the slides and dissect how it works.
 
 
 ---
