@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R for Interactive Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Carson Sievert   Software Engineer, RStudio   July 27th, 2020" />
+    <script src="index_files/header-attrs-2.4.0/header-attrs.js"></script>
+    <link href="index_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="index_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link href="index_files/font-awesome-5.3.1/css/fontawesome-all.min.css" rel="stylesheet" />
+    <script src="index_files/htmlwidgets-1.5.1.9001/htmlwidgets.js"></script>
+    <script src="index_files/plotly-binding-4.9.2.9000/plotly.js"></script>
+    <script src="index_files/typedarray-0.1/typedarray.min.js"></script>
+    <script src="index_files/jquery-1.11.3/jquery.min.js"></script>
+    <link href="index_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+    <script src="index_files/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+    <link href="index_files/plotly-htmlwidgets-css-1.54.1/plotly-htmlwidgets.css" rel="stylesheet" />
+    <script src="index_files/plotly-main-1.54.1/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="css/main.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R for Interactive Data Visualization
+### Carson Sievert <br> Software Engineer, RStudio <br> July 27th, 2020
+### Slides: <a href="https://bit.ly/cdc-data-viz">bit.ly/cdc-data-viz</a> <br> <br> <i class="fab  fa-twitter "></i> <a href="https://twitter.com/cpsievert"><span class="citation">@cpsievert</span></a> <br> <i class="fab  fa-github "></i> <a href="https://github.com/cpsievert"><span class="citation">@cpsievert</span></a> <br> <i class="fas  fa-envelope "></i> <a href="mailto:cpsievert1@gmail.com" class="email">cpsievert1@gmail.com</a> <br /> <i class="fas  fa-globe "></i> <a href="https://cpsievert.me/" class="uri">https://cpsievert.me/</a> <br> <br> Slides released under <a href="https://github.com/cpsievert/talks/blob/gh-pages/LICENSE">Creative Commons</a>
+
+---
+
+class: middle
+
+## About me
+
+* Software Engineer @ RStudio (Shiny team)
+  * Maintain numerous R packages: **plotly**, **thematic**, **bootstraplib**, **shinymeta**, **LDAvis**.
+  * Also a regular contributor to: **shiny**, **rmarkdown**, **knitr**, etc.
+  
+* Author of the book: [_Interactive web-based data visualization with R, plotly, and shiny_](https://plotly-r.com).
+  * More of a R user guide than &lt;https://plotly.com/r&gt;
+
+* PhD in statistics at Iowa State University
+  * Dissertation on Interactive Statistical Graphics.
+
+
+
+
+
+---
+
+### Notable dataviz tools in R
+
+* __ggplot2__: for exploratory dataviz
+  * Conceptual framework enables quick iteration
+  * Smart defaults, yet highly customizable
+  * Rich ecosystem of [extension packages](https://exts.ggplot2.tidyverse.org/gallery/)
+
+* __plotly__: for interactive dataviz
+  * Convert __ggplot2__ into interactive web graphics
+  * Binds directly to a rich and mature underlying JavaScript library
+  * Support for graphical queries, linking views, animation, and more
+  * Just one of [many **htmlwidgets**](http://gallery.htmlwidgets.org/)
+
+* __shiny__: for more interactivity
+    * Make _any_ R plot interactive
+      * Easy to add controls for indirect manipulation
+      * Possible to leverage direct manipulation as well
+
+* __rmarkdown__: for composition and layout
+  * Rich ecosystem of extensions makes it easy to create [dashboards](https://rmarkdown.rstudio.com/flexdashboard/), [websites](https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html), [presentations](https://rmarkdown.rstudio.com/lesson-11.html), pdf, word, and more.
+  * Increase the reproducibility and transparency of your deliverables
+  
+
+---
+### ggplot2: a grammar of graphics
+
+.pull-left[
+* __ggplot2__ implements [the Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448) in R.
+
+&lt;img src="https://www.pinclipart.com/picdir/middle/19-190247_core-tidyverse-ggplot2-hex-clipart.png" /&gt;
+]
+
+.pull-right[
+* Any graph can be broken down into the following components:
+    1. <span style="color: #FF851B">Data</span>
+    2. <span style="color: #2ECC40">Mappings</span> (i.e. variables to visualize)
+    3. <span style="color: #0074D9">Geoms</span> (e.g., points, lines, rectangles, etc)
+        * Statistical aggregation
+        * Positional adjustment
+    4. Scales
+    5. Facets (i.e., small multiples)
+    6. Coordinates
+    7. Theme (i.e., styling)
+
+* As a **ggplot2** user, all you _really_ need to provide is 1, 2, and 3. Everything thing else has smart defaults.
+
+* Helps minimize the cognitive burden, especially during the iteration phase.
+]
+
+---
+class: middle, inverse
+
+### Let's start with some toy data on cars
+
+R comes with some useful toy datasets (e.g., `mtcars`):
+
+
+```
+#&gt; # A tibble: 32 x 5
+#&gt;    name                 wt   mpg am          cyl
+#&gt;    &lt;chr&gt;             &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+#&gt;  1 Mazda RX4          2.62  21   manual        6
+#&gt;  2 Mazda RX4 Wag      2.88  21   manual        6
+#&gt;  3 Datsun 710         2.32  22.8 manual        4
+#&gt;  4 Hornet 4 Drive     3.22  21.4 automatic     6
+#&gt;  5 Hornet Sportabout  3.44  18.7 automatic     8
+#&gt;  6 Valiant            3.46  18.1 automatic     6
+#&gt;  7 Duster 360         3.57  14.3 automatic     8
+#&gt;  8 Merc 240D          3.19  24.4 automatic     4
+#&gt;  9 Merc 230           3.15  22.8 automatic     4
+#&gt; 10 Merc 280           3.44  19.2 automatic     6
+#&gt; # … with 22 more rows
+```
+
+
+---
+class: middle
+
+### Focus on 3 key aspects: <span style="color: #FF851B">Data</span>, <span style="color: #2ECC40">Mappings</span>, and <span style="color: #0074D9">Geoms</span>.
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(ggplot2)&lt;br&gt;ggplot(&lt;span style='color:#FF851B'&gt;mtcars&lt;/span&gt;) + &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#0074D9'&gt;geom_point&lt;/span&gt;(mapping = aes(&lt;span style='color:#2ECC40'&gt;x = wt, y = mpg&lt;/span&gt;))&lt;/code&gt;
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-41-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle
+
+### Focus on 3 key aspects: Data, <span style="color: #2ECC40">Mappings</span>, and Geoms.
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(ggplot2)&lt;br&gt;ggplot(mtcars) + &lt;br&gt;&amp;nbsp;&amp;nbsp;geom_point(mapping = aes(x = wt, y = mpg, &lt;span style='color:#2ECC40'&gt;color = am&lt;/span&gt;))&lt;/code&gt;
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-42-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle
+
+### Focus on 3 key aspects: Data, <span style="color: #2ECC40">Mappings</span>, and Geoms.
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(ggplot2)&lt;br&gt;ggplot(mtcars) + &lt;br&gt;&amp;nbsp;&amp;nbsp;geom_point(mapping = aes(x = wt, y = mpg, color = am, &lt;span style='color:#2ECC40'&gt;shape = am, size = hp&lt;/span&gt;))&lt;/code&gt;
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-43-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle
+
+### <span style="color: #0074D9">Geoms</span> (aka Layers) inherit <span style="color: #FF851B">Data</span> and <span style="color: #2ECC40">Mappings</span> from `ggplot()`
+
+
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(ggplot2)&lt;br&gt;ggplot(&lt;span style='color:#FF851B'&gt;mtcars&lt;/span&gt;, aes(&lt;span style='color:#2ECC40'&gt;x = wt, y = mpg, color = am&lt;/span&gt;)) + &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#0074D9'&gt;geom_point&lt;/span&gt;() +&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#0074D9'&gt;geom_smooth&lt;/span&gt;()&lt;/code&gt;
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-41-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: middle
+
+### <span style="color: #0074D9">Geoms</span> (aka Layers) inherit <span style="color: #FF851B">Data</span> and <span style="color: #2ECC40">Mappings</span> from `ggplot()`
+
+
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(ggplot2)&lt;br&gt;ggplot(&lt;span style='color:#FF851B'&gt;mtcars&lt;/span&gt;, aes(&lt;span style='color:#2ECC40'&gt;x = wt, y = mpg, color = am&lt;/span&gt;)) + &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#0074D9'&gt;geom_point&lt;/span&gt;(aes(&lt;span style='color:#2ECC40'&gt;shape = am&lt;/span&gt;), size = 3) +&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#0074D9'&gt;geom_smooth&lt;/span&gt;(aes(&lt;span style='color:#2ECC40'&gt;linetype = am&lt;/span&gt;))&lt;/code&gt;
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-41-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle
+
+### <span style="color: #0074D9">Geoms</span> (aka Layers) are parameterized by more than visuals (e.g., <span style="color: purple">Statistics</span>)
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(ggplot2)&lt;br&gt;ggplot(mtcars, aes(x = wt, y = mpg, color = am)) + &lt;br&gt;&amp;nbsp;&amp;nbsp;geom_point(aes(shape = am), size = 3) +&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#0074D9'&gt;geom_smooth&lt;/span&gt;(aes(linetype = am), &lt;span style='color:purple'&gt;method = "lm", se = FALSE&lt;/span&gt;)&lt;/code&gt;
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-42-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle
+
+### Different <span style="color: #0074D9">Geoms</span> (aka Layers) have different (e.g., <span style="color: purple">Statistics</span>)
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(ggplot2)&lt;br&gt;ggplot(mtcars, aes(x = wt, color = am)) + &lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#0074D9'&gt;geom_density&lt;/span&gt;(kernel = "gaussian")&lt;/code&gt;
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-43-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle
+
+### Use <span style="color: #FF851B">Facets</span> to see how patterns change across sub-groups
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(ggplot2)&lt;br&gt;ggplot(mtcars, aes(x = wt, color = factor(cyl))) + &lt;br&gt;&amp;nbsp;&amp;nbsp;geom_density() +&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#FF851B'&gt;facet_wrap&lt;/span&gt;(~am)&lt;/code&gt;
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-44-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle
+
+### ggplotly(): Make ggplot2 interactive and web-based!
+
+```r
+library(plotly)
+ggplotly() # picks up on the previously printed ggplot 
+```
+
+&lt;div align="center"&gt;
+&lt;iframe src="gghello.html" height="425" width="100%" scrolling="no" seamless="seamless" frameBorder="0"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+---
+### Works with nearly any ggplot2 geom
+
+```r
+library(plotly)
+p &lt;- ggplot(mtcars, aes(x = wt, y = mpg, color = am)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+ggplotly(p)
+```
+
+&lt;div align="center"&gt;
+&lt;iframe src="ggsmooth.html" height="425" width="100%" scrolling="no" seamless="seamless" frameBorder="0"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+---
+### Customized ggplotly() tooltips ([learn more](https://plotly-r.com/controlling-tooltips.html#tooltip-text-ggplotly))
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;library(plotly)&lt;br&gt;p &lt;- ggplot(mtcars, aes(x = wt, y = mpg, color = am)) + &lt;br&gt;&amp;nbsp;&amp;nbsp;geom_point(aes(&lt;span style='background-color:#ffff7f'&gt;text = name&lt;/span&gt;)) +&lt;br&gt;&amp;nbsp;&amp;nbsp;geom_smooth(method = "lm", se = FALSE)&lt;br&gt;ggplotly(p, &lt;span style='background-color:#ffff7f'&gt;tooltip = "text"&lt;/span&gt;)&lt;/code&gt;
+
+
+&lt;div align="center"&gt;
+&lt;iframe src="ggsmooth-tooltip.html" height="425" width="100%" scrolling="no" seamless="seamless" frameBorder="0"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+---
+### Use plotly's API to customize further!
+
+
+```r
+last_plot() %&gt;%
+  style(hoverlabel = list(bgcolor = "white"), hoverinfo = "x+y+text") %&gt;%
+  layout(
+    xaxis = list(showspikes = TRUE),
+    yaxis = list(showspikes = TRUE)
+  )
+```
+
+&lt;div align="center"&gt;
+&lt;iframe src="ggsmooth-custom.html" height="425" width="100%" scrolling="no" seamless="seamless" frameBorder="0"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+
+---
+### Trouble with `ggplotly()`? Try `plot_ly()`!
+
+`plot_ly()` is a more "direct" interface to the underlying plotly.js (JavaScript) library.
+
+```r
+plot_ly(mtcars) %&gt;%
+  add_markers(x = ~wt, y = ~mpg, color = ~am)
+```
+
+&lt;img src="plot_ly.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+---
+### `plot_ly()`: also inspired by grammar of graphics
+
+Focus on 3 key aspects: <span style="color: #FF851B">Data</span>, <span style="color: #2ECC40">Mappings</span>, and <span style="color: #0074D9">Geoms</span>.
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(&lt;span style='color:#FF851B'&gt;mtcars&lt;/span&gt;) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#0074D9'&gt;add_markers&lt;/span&gt;(&lt;span style='color:#2ECC40'&gt;x = ~wt, y = ~mpg, color = ~am&lt;/span&gt;)&lt;/code&gt;
+
+&lt;img src="plot_ly.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+---
+### `plot_ly()`: embraces the pipe
+
+To add to (or modify) a **plotly** object, use `%&gt;%` instead of `+`
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(mtcars) &lt;span style='background-color:#ffff7f'&gt;%&gt;%&lt;/span&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;add_markers(x = ~wt, y = ~mpg, color = ~am, symbol = ~am)&lt;/code&gt;
+
+&lt;img src="plot_ly_symbol.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+### Tip: Scale up with `toWebGL()` (also works with `ggplotly()`)
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(diamonds) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;add_markers(x = ~carat, y = ~price) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background-color:#ffff7f'&gt;toWebGL&lt;/span&gt;()&lt;/code&gt;
+
+&lt;img src="diamonds-raw.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+`toWebGL()` changes rendering to HTML Canvas instead of SVG. The difference is similar to using `png()` instead of `pdf()` for static plots ([lower-quality, but way more scalable](https://vector-conversions.com/vectorizing/raster_vs_vector.html)).
+
+---
+### Tip: Combat overplotting with alpha blending
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(diamonds) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;add_markers(x = ~carat, y = ~price, &lt;span style='background-color:#ffff7f'&gt;alpha = 0.1&lt;/span&gt;) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;toWebGL()&lt;/code&gt;
+
+&lt;img src="diamonds-alpha.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+---
+### Tip: Combat overplotting with summaries
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(diamonds) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background-color:#ffff7f'&gt;add_histogram2d&lt;/span&gt;(x = ~carat, y = ~price)&lt;/code&gt;
+
+&lt;img src="diamonds-summary.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+For "heavy-tailed" distributions, it can be useful to perform the summary (e.g., log counts) in R yourself. For more on this, see &lt;https://plotly-r.com/frequencies-2d&gt;
+
+---
+class: middle, inverse 
+
+# Demo
+
+---
+
+## Some motivation: COVID explorer (by ft.com)
+
+&lt;div align="center"&gt;
+&lt;a href="https://ft.com/covid19"&gt;
+  &lt;img src="ft-covid.gif" width="100%" &gt;
+&lt;/a&gt;
+&lt;/div&gt;
+
+---
+## The data
+
+```r
+library(plotly)
+library(tidyverse)
+  
+covid &lt;- read_csv("https://covidtracking.com/api/v1/states/daily.csv") %&gt;%
+  mutate(date = lubridate::ymd(as.character(date)))
+  
+select(covid, date, deathIncrease, state)
+```
+
+```r
+# A tibble: 7,857 x 3
+   date       deathIncrease state
+   &lt;date&gt;             &lt;dbl&gt; &lt;chr&gt;
+ 1 2020-07-23             0 AK   
+ 2 2020-07-23            33 AL   
+ 3 2020-07-23             6 AR   
+ 4 2020-07-23             0 AS   
+ 5 2020-07-23            89 AZ   
+ 6 2020-07-23           157 CA   
+ 7 2020-07-23             0 CO   
+ 8 2020-07-23             4 CT   
+ 9 2020-07-23             1 DC   
+10 2020-07-23             2 DE   
+# … with 7,847 more rows
+```
+
+---
+
+## Simple time series by state
+
+```r
+plot_ly(covid) %&gt;%
+  group_by(state) %&gt;%
+  add_lines(x = ~date, y = ~deathIncrease, text = ~state)
+```
+
+&lt;div align="center"&gt;
+ &lt;img src="covid.png" width="95%" &gt;
+&lt;/div&gt;
+
+
+---
+
+## Highlight a state on click
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(&lt;span style='background-color:#ffff7f'&gt;highlight_key(covid, ~state)&lt;/span&gt;) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;group_by(state) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;add_lines(x = ~date, y = ~deathIncrease, text = ~state)&lt;/code&gt;
+
+&lt;div align="center"&gt;
+&lt;a href="covid-click.html"&gt;
+ &lt;img src="covid-click.png" width="95%" &gt;
+&lt;/a&gt;
+&lt;/div&gt;
+
+
+
+---
+### Highlight on hover &amp; search by name
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(highlight_key(covid, ~state)) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;group_by(state) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;add_lines(x = ~date, y = ~deathIncrease, text = ~state) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background-color:#ffff7f'&gt;highlight("plotly_hover", selectize = TRUE)&lt;/span&gt;&lt;/code&gt;
+
+&lt;div align="center"&gt;
+&lt;a href="covid-hover.html"&gt;
+ &lt;img src="covid-hover.png" width="95%" &gt;
+&lt;/a&gt;
+&lt;/div&gt;
+
+---
+### Persistent highlight with dynamic coloring
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(highlight_key(covid, ~state)) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;group_by(state) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;add_lines(x = ~date, y = ~deathIncrease, text = ~state) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;highlight("plotly_hover", selectize = TRUE, &lt;span style='background-color:#ffff7f'&gt;dynamic = TRUE, persistent = TRUE&lt;/span&gt;)&lt;/code&gt;
+
+&lt;div align="center"&gt;
+&lt;a href="covid-persist.html"&gt;
+ &lt;img src="covid-persist.png" width="95%" &gt;
+&lt;/a&gt;
+&lt;/div&gt;
+
+---
+### Death totals by state
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;plot_ly(highlight_key(covid, ~state)) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;group_by(state) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;&lt;span style='background-color:#ffff7f'&gt;summarise(total = sum(deathIncrease)) %&gt;%&lt;/span&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;add_bars(x = ~total, y = ~forcats::fct_reorder(state, total))&lt;/code&gt;
+
+&lt;div align="center"&gt;
+ &lt;img src="covid-totals.png" width="90%" &gt;
+&lt;/div&gt;
+
+---
+### Linked highlighting (i.e., graphical queries)
+
+&lt;iframe src="covid-linked.html" width="100%" height="550" id="igraph" scrolling="no" seamless="seamless" frameBorder="0"&gt; &lt;/iframe&gt;
+
+
+---
+### The code
+
+
+
+
+&lt;code class ='r hljs remark-code'&gt;&lt;span style='background-color:#ffff7f'&gt;covid_highlight&lt;/span&gt; &lt;- highlight_key(covid, ~state)&lt;br&gt;&lt;br&gt;p1 &lt;- plot_ly(&lt;span style='background-color:#ffff7f'&gt;covid_highlight&lt;/span&gt;, color = I("black")) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;group_by(state) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;summarise(total = sum(deathIncrease)) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;add_bars(x = ~total, y = ~forcats::fct_reorder(state, total))&lt;br&gt;&lt;br&gt;p2 &lt;- plot_ly(&lt;span style='background-color:#ffff7f'&gt;covid_highlight&lt;/span&gt;, color = I("black")) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;group_by(state) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;add_lines(x = ~date, y = ~deathIncrease, text = ~state)&lt;br&gt;&lt;br&gt;&lt;span style='background-color:#ffff7f'&gt;subplot&lt;/span&gt;(p1, p2, nrows = 1, widths = c(0.3, 0.7)) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;highlight(selectize = TRUE, dynamic = TRUE) %&gt;%&lt;br&gt;&amp;nbsp;&amp;nbsp;layout(showlegend = FALSE, barmode = "overlay")&lt;/code&gt;
+
+
+---
+background-image: url(server-client-highlight.svg)
+background-size: contain
+class: middle, right
+
+## All the interactivity handled client-side!
+
+---
+background-image: url(server-client-highlight.svg)
+background-size: contain
+class: middle, right
+
+## Easier to share and maintain
+
+---
+background-image: url(server-client-highlight.svg)
+background-size: contain
+class: middle, right
+
+## Learn more at [plotly-r.com](https://plotly-r.com/client-side-linking.html)
+
+---
+background-image: url(server-client.svg)
+background-size: contain
+class: middle, right
+
+## [Server-side linking](https://plotly-r.com/linking-views-with-shiny.html) is _way_ more powerful
+
+---
+background-image: url(server-client.svg)
+background-size: contain
+class: middle, right
+
+## shiny makes it quite easy!
+
+---
+### shiny: Interactive webapps in R
+
+.pull-left[
+* Easily turn your R code into an interactive GUI
+  * Makes it easy to make R code *react* to user inputs.
+  
+* Allow users to quickly explore different parameters, models, algorithms, etc.
+  * Widely used by Pharma companies to speed collaboration between scientists, analysts, and managers during drug development.
+
+* As we'll see, it's a very powerful way to share information between different outputs (e.g., `plotlyOutput()`, `textOutput()`, `leafletOutput()`, etc)
+]
+
+.pull-right[
+&lt;img src="shiny-plotly-y.gif" width="100%" &gt;
+]
+
+
+---
+### Use Shiny inputs to trigger re-render
+
+.pull-left[
+```r
+library(shiny)
+library(plotly)
+
+ui &lt;- fluidPage(
+* selectInput(
+*   "y", "Choose a variable", 
+*   choices = names(diamonds)
+* ),
+  plotlyOutput("p")
+)
+
+server &lt;- function(input, output) {
+
+  output$p &lt;- renderPlotly({
+    plot_ly(
+*     y = diamonds[[input$y]]
+    )
+  })
+  
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="shiny-plotly-y.gif" width="100%" &gt;
+]
+
+---
+### Access output interaction as an input value
+
+.pull-left[
+```r
+library(shiny)
+library(plotly)
+
+ui &lt;- fluidPage(
+  selectInput(
+    "y", "Choose a variable", 
+    choices = names(diamonds)
+  ),
+  plotlyOutput("p"),
+  verbatimTextOutput("hover")
+)
+
+server &lt;- function(input, output) {
+  output$p &lt;- renderPlotly({
+    plot_ly(y = diamonds[[input$y]])
+  })
+* output$hover &lt;- renderPrint({
+*   #Think of this like an input value
+*   event_data("plotly_hover")
+* })
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="shiny-plotly-hover.gif" width="90%" &gt;
+]
+
+---
+### Many types of output interactions
+
+Access hover, click, click&amp;drag, etc, as input values:
+
+* `plotly::plotlyOutput()`
+    * https://plotly-r.com/linking-views-with-shiny.html#shiny-plotly-inputs
+    
+* `leaflet::leafletOutput()`
+    * https://rstudio.github.io/leaflet/shiny.html
+
+* `DT::dataTableOutput()`
+    * https://rstudio.github.io/DT/shiny.html
+
+* `shiny::plotOutput()` &amp; `shiny::imageOutput()`
+    * Interactive plots section of https://shiny.rstudio.com/gallery/
+    * https://shiny.rstudio.com/articles/plot-interaction.html
+    * https://shiny.rstudio.com/articles/selecting-rows-of-data.html
+    * https://shiny.rstudio.com/articles/plot-interaction-advanced.html
+    
+.footnote[
+Many other [htmlwidgets](http://www.htmlwidgets.org/) packages also expose output interactions as input values.
+]
+
+
+---
+## Brushing a histogram to update scatterplot
+
+<iframe src="https://player.vimeo.com/video/318129005?title=0&amp;byline=0&amp;portrait=0" width="100%" height="450" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+---
+## Useful layout attributes for histogram brushing
+
+```r
+plot_ly(diamonds, x = ~depth) %&gt;%
+  layout(
+    dragmode = "select", 
+    selectdirection = "h"
+  )
+```
+
+&lt;div align="center"&gt;
+  &lt;img src="brushing-cropped.gif" width="70%" /&gt;
+&lt;/div&gt;
+
+
+---
+## Accessing brush limits
+
+.pull-left[
+```r
+library(shiny)
+
+ui &lt;- fluidPage(
+  plotlyOutput("bars"),
+  verbatimTextOutput("info")
+)
+
+server &lt;- function(input, output) {
+  
+  output$bars &lt;- renderPlotly({
+    plot_ly(diamonds, x = ~depth) %&gt;%
+      layout(dragmode = "select", selectdirection = "h")
+  })
+  
+  output$info &lt;- renderPrint({
+*   event_data("plotly_brushing")
+  })
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="brushing.gif" width="100%" /&gt;
+]
+
+
+---
+## Applying the brush (i.e., selecting rows)
+
+.pull-left[
+```r
+server &lt;- function(input, output) {
+  
+  output$bars &lt;- renderPlotly({
+    plot_ly(diamonds, x = ~depth) %&gt;%
+      layout(dragmode = "select", selectdirection = "h")
+  })
+  
+  brushed &lt;- reactive({
+    brush &lt;- event_data("plotly_brushing")
+*    if (is.null(brush)) {
+*      TRUE
+*    } else {
+*      between(
+*        diamonds$depth, 
+*        brush$x[1], 
+*        brush$x[2]
+*      )
+*    }
+  })
+  
+  output$info &lt;- renderPrint({
+    summary(brushed())
+  })
+}
+```
+]
+
+.pull-right[
+&lt;img src="brushing-summary.gif" width="100%" /&gt;
+]
+
+---
+## Updating the scatterplot
+
+.pull-left[
+```r
+server &lt;- function(input, output) {
+
+  output$bars &lt;- renderPlotly({
+    plot_ly(diamonds, x = ~depth) %&gt;%
+      layout(dragmode = "select", selectdirection = "h")
+  })
+  
+  brushed &lt;- reactive({
+    brush &lt;- event_data("plotly_brushed")
+    if (is.null(brush)) TRUE else between(diamonds$depth, brush$x[1], brush$x[2])
+  })
+  
+  output$scatter &lt;- renderPlotly({
+    diamonds %&gt;%
+*     filter(brushed()) %&gt;%
+      plot_ly(
+        x = ~carat, 
+        y = ~price, 
+        alpha = 0.2
+      ) %&gt;%
+      toWebGL()
+  })
+}
+```
+]
+
+.pull-right[
+&lt;img src="brushing-filtering.gif" width="100%" /&gt;
+]
+
+---
+## Performance note: use `toWebGL()`!
+
+.pull-left[
+```r
+server &lt;- function(input, output) {
+
+  output$bars &lt;- renderPlotly({
+    plot_ly(diamonds, x = ~depth) %&gt;%
+      layout(dragmode = "select", selectdirection = "h")
+  })
+  
+  brushed &lt;- reactive({
+    brush &lt;- event_data("plotly_brushing")
+    if (is.null(brush)) TRUE else between(diamonds$depth, brush$x[1], brush$x[2])
+  })
+  
+  output$scatter &lt;- renderPlotly({
+    diamonds %&gt;%
+      filter(brushed()) %&gt;%
+      plot_ly(
+        x = ~carat, 
+        y = ~price, 
+        alpha = 0.2
+      ) %&gt;%
+*     toWebGL()
+  })
+}
+```
+]
+
+.pull-right[
+&lt;img src="brushing-filtering.gif" width="100%" /&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+Uses a Canvas-based renderer instead of SVG (think png versus pdf)
+]
+
+---
+## Performance note: use summaries!
+
+.pull-left[
+```r
+server &lt;- function(input, output) {
+
+  output$bars &lt;- renderPlotly({
+    plot_ly(diamonds, x = ~depth) %&gt;%
+      layout(dragmode = "select", selectdirection = "h")
+  })
+  
+  brushed &lt;- reactive({
+    brush &lt;- event_data("plotly_brushing")
+    if (is.null(brush)) TRUE else between(diamonds$depth, brush$x[1], brush$x[2])
+  })
+  
+  output$scatter &lt;- renderPlotly({
+    diamonds %&gt;%
+      filter(brushed()) %&gt;%
+      plot_ly(
+        x = ~carat, 
+        y = ~price, 
+        alpha = 0.2
+      ) %&gt;%
+*     add_histogram2dcontour()
+  })
+}
+```
+]
+
+.pull-right[
+&lt;img src="brushing-filtering-contour.gif" width="100%" /&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+It can also pay to minimize the amount of data sent over-the-wire (make this even more scalable by [summarizing server-side](https://github.com/ropensci/plotly/blob/master/inst/examples/shiny/crossfilter_kde/app.R))
+]
+  
+---
+class: inverse, middle, principles
+
+## General notes on brushing responsively
+
+* `plotly_brushed` / `plotly_selected`: fires once after mouseup.
+* `plotly_brushing` / `plotly_selecting`: fires rapidly while brush moving.
+
+* If the response to a brush event is slow, consider these options:
+    * Do continous updates help? If not, use `plotly_brushed`.
+    * Do intermediate updates matter? If not, `debounce()` rapid firing events.
+    * Use `plotlyProxy()` to partially modify plotly graphs
+
+* Learn more about improving responsiveness:
+  - https://plotly-r.com/linking-views-with-shiny.html#shiny-performance
+  - https://resources.rstudio.com/webinars/accessing-and-responding-to-plotly-events-in-shiny-carson-sievert
+
+---
+## How about brushing the scatterplot?
+
+&lt;div align="center"&gt;
+  &lt;img src="scatter-target.gif" height=500 /&gt;
+&lt;/div&gt;
+
+---
+## Accessing brushed data points
+
+.pull-left[
+```r
+library(shiny)
+
+ui &lt;- fluidPage(
+  plotlyOutput("scatter"),
+  verbatimTextOutput("info")
+)
+
+server &lt;- function(input, output) {
+  
+  output$scatter &lt;- renderPlotly({
+    plot_ly(
+      diamonds, alpha = 0.2,
+      x = ~carat, y = ~price
+    ) %&gt;%
+    toWebGL() %&gt;%
+*   event_register("plotly_selecting")
+  })
+  
+  output$info &lt;- renderPrint({
+*   event_data("plotly_selecting")
+  })
+  
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="plotly_selecting.gif" /&gt;
+]
+
+---
+## How do we determine which rows are brushed?
+
+.pull-left[
+```r
+library(shiny)
+
+ui &lt;- fluidPage(
+  plotlyOutput("scatter"),
+  verbatimTextOutput("info")
+)
+
+server &lt;- function(input, output) {
+  
+  output$scatter &lt;- renderPlotly({
+    plot_ly(
+      diamonds, alpha = 0.2,
+      x = ~carat, y = ~price
+    ) %&gt;%
+    toWebGL() %&gt;%
+*   event_register("plotly_selecting")
+  })
+  
+  output$info &lt;- renderPrint({
+*   event_data("plotly_selecting")
+  })
+  
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="plotly_selecting.gif" /&gt;
+]
+
+---
+## Attach a row identifier!
+
+.pull-left[
+```r
+library(shiny)
+
+ui &lt;- fluidPage(
+  plotlyOutput("scatter"),
+  verbatimTextOutput("info")
+)
+
+server &lt;- function(input, output) {
+  
+  output$scatter &lt;- renderPlotly({
+    plot_ly(
+      diamonds, alpha = 0.2,
+      x = ~carat, y = ~price,
+*     customdata = seq(1, nrow(diamonds))
+    ) %&gt;%
+    toWebGL() %&gt;%
+    event_register("plotly_selecting")
+  })
+  
+  output$info &lt;- renderPrint({
+    event_data("plotly_selecting")
+  })
+  
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="plotly_selecting_custom.gif" /&gt;
+]
+
+---
+## Updating the histogram
+
+.pull-left[
+```r
+server &lt;- function(input, output) {
+  
+  output$scatter &lt;- renderPlotly({
+    plot_ly(diamonds, alpha = 0.2, x = ~carat, y = ~price, customdata = seq(1, nrow(diamonds))) %&gt;% toWebGL() %&gt;% event_register("plotly_selecting")
+  })
+  
+  output$bars &lt;- renderPlotly({
+    d &lt;- event_data("plotly_selecting")
+*   if (is.null(d)) {
+*     plot_ly(diamonds, x = ~depth)
+*   } else {
+*     diamonds %&gt;%
+*       slice(d$customdata) %&gt;%
+*       plot_ly(x = ~depth)
+*   }
+  })
+  
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="scatter-target.gif" /&gt;
+]
+
+---
+## Pro-tip: overlay selections with relative frequencies!
+
+.pull-left[
+```r
+server &lt;- function(input, output) {
+  
+  output$scatter &lt;- renderPlotly({
+    plot_ly(diamonds, alpha = 0.2, x = ~carat, y = ~price, customdata = seq(1, nrow(diamonds)), selected = list(marker = list(color = "red"))) %&gt;% toWebGL() %&gt;% event_register("plotly_selecting")
+  })
+  
+  output$bars &lt;- renderPlotly({
+    base &lt;- diamonds %&gt;%
+      plot_ly(
+        x = ~depth, alpha = 0.3,
+*       histnorm = "probability density"
+      ) %&gt;%
+      add_histogram()
+    
+    d &lt;- event_data("plotly_selecting")
+    if (is.null(d))  return(base)
+    
+    add_histogram(
+      base, color = I("red"),
+      data = slice(diamonds, d$customdata)
+    )
+  })
+  
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="scatter-target-compare.gif" /&gt;
+]
+
+---
+
+### Cross-filtering 350,000 flights
+
+<iframe src="https://player.vimeo.com/video/318129502?title=0&amp;byline=0&amp;portrait=0" width="100%" height="450" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+[App](https://testing-apps.shinyapps.io/crossfilter/) / [Code](https://github.com/ropensci/plotly/blob/master/inst/examples/shiny/crossfilter/app.R)
+
+This approach scales to about 5 million on my laptop
+
+---
+### Cross-filter with multiple comparisons (i.e., persistent selection)
+
+<iframe src="https://player.vimeo.com/video/307598246?title=0&amp;byline=0&amp;portrait=0" width="100%" height="450" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+[App](https://testing-apps.shinyapps.io/crossfilter_compare) / [Code](https://github.com/ropensci/plotly/blob/master/inst/examples/shiny/crossfilter_compare/app.R)
+
+---
+### Persistent selection is _very_ useful, but tricky to implement!
+
+<iframe src="https://player.vimeo.com/video/353646796?title=0&amp;byline=0&amp;portrait=0" width="100%" height="450" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+[Code](https://tutorials.cpsievert.me/20190821/#32)
+
+
+---
+class: inverse, middle, principles
+
+## Programming with 'hidden state'
+
+* Persistent selection requires management of 'hidden state'
+  * Plot updates need to be aware of previous user selection(s)
+
+* In general, a Shiny app has 'hidden state' if output(s) can't be fully determined by the UI's current `input` values
+
+* Programming with 'hidden state' enables fancy interactivity such as cross-filter, drill-down, etc, but it also:
+  * Makes reactive logic more difficult to reason about
+  * Makes some Shiny features more difficult to leverage (e.g. bookmarking)
+
+---
+### Managing state with `reactiveVal()`
+
+.pull-left[
+```r
+library(shiny)
+
+ui &lt;- fluidPage(
+  actionButton("minus", "-1"),
+  actionButton("plus", "+1"),
+  textOutput("value")
+)
+
+server &lt;- function(input, output) {
+  val &lt;- reactiveVal(0)     
+  observeEvent(input$minus, {
+    newValue &lt;- val() - 1
+    val(newValue)
+  })
+  observeEvent(input$plus, {
+    newValue &lt;- val() + 1
+    val(newValue)
+  })
+  output$value &lt;- renderText(val())
+}
+
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="state-count.gif" /&gt;
+]
+
+---
+### Storing event data
+
+.pull-left[
+```r
+hover_data &lt;- reactiveVal()
+observeEvent(event_data("plotly_hover"), {
+  new_hover &lt;- rbind(
+    hover_data(), 
+    event_data("plotly_hover")
+  )
+  hover_data(new_hover)
+})
+observeEvent(event_data("plotly_doubleclick"), {
+  hover_data(NULL)
+})
+```
+]
+
+.pull-right[
+&lt;img src="state-hover-data.gif" /&gt;
+]
+
+
+---
+### What about 'drill-down'?
+
+<iframe src="https://player.vimeo.com/video/328763167?title=0&amp;byline=0&amp;portrait=0" width="100%" height="450" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+https://plotly-r.com/linking-views-with-shiny.html#drill-down
+
+---
+### Drill-down across multiple views!
+
+<iframe src="https://player.vimeo.com/video/328768848?title=0&amp;byline=0&amp;portrait=0" width="100%" height="450" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+https://plotly-r.com/linking-views-with-shiny.html#drill-down
+
+---
+### UI pro-tip: leave 'breadcrumbs'
+
+<iframe src="https://player.vimeo.com/video/328770954?title=0&amp;byline=0&amp;portrait=0" width="100%" height="450" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+https://plotly-r.com/linking-views-with-shiny.html#drill-down
+
+---
+### A 'drill-down' example that doesn't require hidden state
+
+<iframe src="https://player.vimeo.com/video/307597838?title=0&amp;byline=0&amp;portrait=0" width="100%" height="500" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+---
+### sales transactions
+
+.pull-left[
+```r
+library(tidyverse)
+sales &lt;- read_csv("data/sales.csv")
+glimpse(sales)
+```
+
+```r
+#&gt; Observations: 9,994
+#&gt; Variables: 5
+#&gt; $ id           &lt;chr&gt; "CG-12520", "CG-12520", "DV-13045", "SO-20335…
+#&gt; $ category     &lt;chr&gt; "Furniture", "Furniture", "Office  Supplies", …
+#&gt; $ sub_category &lt;chr&gt; "Bookcases", "Chairs", "Labels", "Tables", "S…
+#&gt; $ order_date   &lt;date&gt; 2016-11-08, 2016-11-08, 2016-06-12, 2015-10-…
+#&gt; $ sales        &lt;dbl&gt; 261.9600, 731.9400, 14.6200, 957.5775, 22.368…
+```
+]
+
+.pull-right[
+```r
+sales %&gt;%
+  group_by(category) %&gt;%
+  summarise(n = sum(sales))
+```
+
+```r
+#&gt; # A tibble: 3 x 2
+#&gt;   category              n
+#&gt;   &lt;chr&gt;             &lt;dbl&gt;
+#&gt; 1 Furniture       742000.
+#&gt; 2 Office Supplies 719047.
+#&gt; 3 Technology      836154.
+```
+]
+
+
+---
+### sales transactions (continued)
+
+.pull-left[
+```r
+library(tidyverse)
+sales &lt;- read_csv("data/sales.csv")
+glimpse(sales)
+```
+
+```r
+#&gt; Observations: 9,994
+#&gt; Variables: 5
+#&gt; $ id           &lt;chr&gt; "CG-12520", "CG-12520", "DV-13045", "SO-20335…
+#&gt; $ category     &lt;chr&gt; "Furniture", "Furniture", "Office  Supplies", …
+#&gt; $ sub_category &lt;chr&gt; "Bookcases", "Chairs", "Labels", "Tables", "S…
+#&gt; $ order_date   &lt;date&gt; 2016-11-08, 2016-11-08, 2016-06-12, 2015-10-…
+#&gt; $ sales        &lt;dbl&gt; 261.9600, 731.9400, 14.6200, 957.5775, 22.368…
+```
+]
+
+.pull-right[
+```r
+sales %&gt;%
+  count(category, wt = sales)
+```
+
+```r
+#&gt; # A tibble: 3 x 2
+#&gt;   category              n
+#&gt;   &lt;chr&gt;             &lt;dbl&gt;
+#&gt; 1 Furniture       742000.
+#&gt; 2 Office Supplies 719047.
+#&gt; 3 Technology      836154.
+```
+]
+
+---
+### sales transactions (continued)
+
+.pull-left[
+```r
+library(tidyverse)
+sales &lt;- read_csv("data/sales.csv")
+glimpse(sales)
+```
+
+```r
+#&gt; Observations: 9,994
+#&gt; Variables: 5
+#&gt; $ id           &lt;chr&gt; "CG-12520", "CG-12520", "DV-13045", "SO-20335…
+#&gt; $ category     &lt;chr&gt; "Furniture", "Furniture", "Office  Supplies", …
+#&gt; $ sub_category &lt;chr&gt; "Bookcases", "Chairs", "Labels", "Tables", "S…
+#&gt; $ order_date   &lt;date&gt; 2016-11-08, 2016-11-08, 2016-06-12, 2015-10-…
+#&gt; $ sales        &lt;dbl&gt; 261.9600, 731.9400, 14.6200, 957.5775, 22.368…
+```
+]
+
+.pull-right[
+```r
+sales %&gt;%
+  count(category, wt = sales) %&gt;%
+  plot_ly(x = ~category, y = ~n)
+```
+&lt;img src="sales-by-category.png" height=200 /&gt;
+]
+
+
+---
+### Accessing sales category clicks
+
+.pull-left[
+```r
+library(shiny)
+ui &lt;- fluidPage(
+  plotlyOutput("category"),
+* verbatimTextOutput("info")
+)
+server &lt;- function(input, output) {
+  output$category &lt;- renderPlotly({
+    sales %&gt;%
+      count(category, wt = sales) %&gt;%
+      plot_ly(x = ~category, y = ~n)
+  })
+  output$info &lt;- renderPrint({
+*   event_data("plotly_click")
+  })
+}
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="sales-click.png" /&gt;
+]
+
+---
+### Plotting sub-categories
+
+.pull-left[
+```r
+library(shiny)
+ui &lt;- fluidPage(
+  plotlyOutput("category"),
+* plotlyOutput("sub_category")
+)
+server &lt;- function(input, output) {
+  output$category &lt;- renderPlotly({
+    sales %&gt;%
+      count(category, wt = sales) %&gt;%
+      plot_ly(x = ~category, y = ~n)
+  })
+  output$sub_category &lt;- renderPlotly({
+    d &lt;- event_data("plotly_click")
+    if (is.null(d)) return(NULL)
+    
+*   sales %&gt;%
+*     filter(category %in% d$x) %&gt;%
+*     count(sub_category, wt = sales) %&gt;%
+*     plot_ly(x = ~sub_category, y = ~n)
+  })
+}
+shinyApp(ui, server)
+```
+]
+
+.pull-right[
+&lt;img src="sales-click-plot.png" /&gt;
+]
+
+
+
+---
+class: inverse, middle, principles
+
+### In summary
+
+* **ggplot2** + **plotly** + **shiny** + **rmarkdown** =&gt; powerful &amp; reproducible toolchain for interactive dataviz.
+
+* Use `ggplotly()` and/or [shiny::renderPlot()](https://shiny.rstudio.com/articles/#graphics) to make your **ggplot2** plots interactive.
+
+* Use `highlight_key()` &amp; `highlight()` for [client-side graphical queries](https://plotly-r.com/client-side-linking.html).
+
+* Use `plotly::event_data()` for [server-side linking with **shiny**](https://plotly-r.com/linking-views-with-shiny.html).
+  * BTW, you can also create [event handlers in JavaScript](https://plotly-r.com/javascript.html)
+  * Improve responsiveness with [partial updating](https://plotly-r.com/linking-views-with-shiny.html#shiny-performance).
+
+* Use `shiny::reactiveVal()` whenever the _next_ view depends on the _previous_ view.
+  * Enables persisting selection, which enables end user to make comparisons.
+
+---
+### Go forth, create linked views!
+
+<iframe src="https://player.vimeo.com/video/372903411?title=0&amp;byline=0&amp;portrait=0" width="100%" height="450" frameborder="0" seamless="seamless" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+Awesome example of linking views with Shiny in Flexdashboard by Kyle Walker https://walkerke.shinyapps.io/neighborhood_diversity/
+
+
+---
+background-image: url(rstudio.svg)
+background-size: 90%
+class: principles, center
+
+## Thanks for listening! Questions?
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+Slides &lt;https://bit.ly/cdc-data-viz&gt; &lt;br&gt;
+<i class="fab  fa-twitter "></i> &lt;a href="https://twitter.com/cpsievert"&gt;@cpsievert&lt;/a&gt; &lt;br&gt;
+<i class="fab  fa-github "></i> &lt;a href="https://github.com/cpsievert"&gt;@cpsievert&lt;/a&gt; &lt;br&gt;
+<i class="fas  fa-envelope "></i> &lt;cpsievert1@gmail.com&gt; &lt;br&gt;
+<i class="fas  fa-globe "></i> [cpsievert.me](https://cpsievert.me)
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="../templates/remarkjs/libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "14.6:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"navigation": {
+"scroll": false
+}
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
